@@ -1,4 +1,5 @@
-# WP CKH Booking Engine
+
+# CKH Booking Engine
 
 A powerful, modern WordPress plugin for integrating a booking engine into your WordPress site. Built with PHP and Alpine.js for a seamless, reactive user experience.
 
@@ -13,12 +14,12 @@ A powerful, modern WordPress plugin for integrating a booking engine into your W
 wp-ckh-booking-engine/
 ├── assets/
 │   ├── css/
-│   │   └── wpbe-style.css
+│   │   └── ckhbe-style.css
 │   └── js/
 │       └── alpine.min.js
 ├── includes/
-│   └── class-wpbe-main.php
-└── wp-ckh-booking-engine.php
+│   └── class-ckhbe-main.php
+└── wp-booking-engine.php
 ```
 
 ## Getting Started
@@ -35,8 +36,13 @@ wp-ckh-booking-engine/
 - Extend the main class in `includes/class-wpbe-main.php` for new features.
 - Add or modify JS/CSS assets as needed.
 
+
 ## License
-[MIT](LICENSE)
+This plugin is licensed under the GNU General Public License v2.0 or later. See the [LICENSE](LICENSE) file for details.
+
+---
+**Copyright (C) 2025 PT. Cakra Media Data (Cakrasoft)**  
+JL. Abdul Kudus Perumahan Barombong Permai C5 Kel. Tamalate Kec. Barombong 90225
 
 ---
 Created by cakramediadata2022
