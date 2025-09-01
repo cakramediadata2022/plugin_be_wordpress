@@ -1,9 +1,14 @@
 <?php
 /*
+
 Plugin Name: CKH Booking Engine
 Description: A powerful booking engine plugin for WordPress.
 Version: 0.1.0
-Author: cakramediadata2022
+Author: PT. Cakra Media Data (Cakrasoft)
+Copyright: (C) 2025 PT. Cakra Media Data (Cakrasoft)
+Address: JL. Abdul Kudus Perumahan Barombong Permai C5 Kel. Tamalate Kec. Barombong 90225
+License: GPL v2 or later
+License URI: https://www.gnu.org/licenses/gpl-2.0.html
 */
 
 // If this file is called directly, abort.
