@@ -1,0 +1,49 @@
+# .gitignore for CKH Booking Engine WordPress Plugin
+# Ignore OS and IDE files
+.DS_Store
+Thumbs.db
+*.log
+*.tmp
+*.swp
+
+# Ignore node/npm files (if any)
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Ignore Composer dependencies (if used)
+vendor/
+composer.lock
+
+# Ignore build artifacts
+/dist/
+/build/
+
+# Ignore WordPress core and uploads (if present in repo)
+wp-content/uploads/
+wp-content/cache/
+wp-content/upgrade/
+
+# Ignore environment and config files
+.env
+.env.*
+wp-config.php
+
+# Ignore backup and export files
+*.sql
+*.sql.gz
+*.zip
+*.tar.gz
+*.bak
+
+# Ignore PHPStorm and VSCode project files
+.idea/
+.vscode/
+
+# Ignore plugin-specific cache or temp files
+ckh-booking-engine/assets/css/*.css.map
+ckh-booking-engine/assets/js/*.js.map
+ckh-booking-engine/assets/js/*.min.js.map
+
+# Ignore any custom local files
+local-config.php
