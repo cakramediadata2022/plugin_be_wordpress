@@ -3,11 +3,11 @@
 /**
  * Register all actions and filters for the plugin
  *
- * @link       http://example.com
+ * @link       https://cakrasoft.com/
  * @since      1.0.0
  *
- * @package    Chk_Booking_Engine
- * @subpackage Chk_Booking_Engine/includes
+ * @package    CKH_Booking_Engine
+ * @subpackage CKH_Booking_Engine/includes
  */
 
 /**
@@ -17,11 +17,11 @@
  * the plugin, and register them with the WordPress API. Call the
  * run function to execute the list of actions and filters.
  *
- * @package    Chk_Booking_Engine
- * @subpackage Chk_Booking_Engine/includes
- * @author     Your Name <email@example.com>
+ * @package    CKH_Booking_Engine
+ * @subpackage CKH_Booking_Engine/includes
+ * @author     cakrasoft <info@cakrasoft.com>
  */
-class CHK_Booking_Engine_Loader
+class CKH_Booking_Engine_Loader
 {
 
 	/**

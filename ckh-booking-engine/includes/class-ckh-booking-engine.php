@@ -6,11 +6,11 @@
  * A class definition that includes attributes and functions used across both the
  * public-facing side of the site and the admin area.
  *
- * @link       http://example.com
+ * @link       https://cakrasoft.com/
  * @since      1.0.0
  *
- * @package    Chk_Booking_Engine
- * @subpackage Chk_Booking_Engine/includes
+ * @package    CKH_Booking_Engine
+ * @subpackage CKH_Booking_Engine/includes
  */
 
 /**
@@ -23,11 +23,11 @@
  * version of the plugin.
  *
  * @since      1.0.0
- * @package    Chk_Booking_Engine
- * @subpackage Chk_Booking_Engine/includes
- * @author     Your Name <email@example.com>
+ * @package    CKH_Booking_Engine
+ * @subpackage CKH_Booking_Engine/includes
+ * @author     cakrasoft <info@cakrasoft.com>
  */
-class CHK_Booking_Engine
+class CKH_Booking_Engine
 {
 
     /**
@@ -36,7 +36,7 @@ class CHK_Booking_Engine
      *
      * @since    1.0.0
      * @access   protected
-     * @var      Chk_Booking_Engine_Loader    $loader    Maintains and registers all hooks for the plugin.
+     * @var      CKH_Booking_Engine_Loader    $loader    Maintains and registers all hooks for the plugin.
      */
     protected $loader;
 
@@ -45,9 +45,9 @@ class CHK_Booking_Engine
      *
      * @since    1.0.0
      * @access   protected
-     * @var      string    $chk_booking_engine    The string used to uniquely identify this plugin.
+     * @var      string    $ckh_booking_engine    The string used to uniquely identify this plugin.
      */
-    protected $chk_booking_engine;
+    protected $ckh_booking_engine;
 
     /**
      * The current version of the plugin.
@@ -69,12 +69,12 @@ class CHK_Booking_Engine
      */
     public function __construct()
     {
-        if (defined('CHK_BOOKING_ENGINE_VERSION')) {
-            $this->version = CHK_BOOKING_ENGINE_VERSION;
+        if (defined('CKH_BOOKING_ENGINE_VERSION')) {
+            $this->version = CKH_BOOKING_ENGINE_VERSION;
         } else {
             $this->version = '1.0.0';
         }
-        $this->chk_booking_engine = 'chk-booking-engine';
+        $this->ckh_booking_engine = 'ckh-booking-engine';
 
         $this->load_dependencies();
         $this->set_locale();
@@ -87,10 +87,10 @@ class CHK_Booking_Engine
      *
      * Include the following files that make up the plugin:
      *
-     * - Chk_Booking_Engine_Loader. Orchestrates the hooks of the plugin.
-     * - Chk_Booking_Engine_i18n. Defines internationalization functionality.
-     * - Chk_Booking_Engine_Admin. Defines all hooks for the admin area.
-     * - Chk_Booking_Engine_Public. Defines all hooks for the public side of the site.
+     * - CKH_Booking_Engine_Loader. Orchestrates the hooks of the plugin.
+     * - CKH_Booking_Engine_i18n. Defines internationalization functionality.
+     * - CKH_Booking_Engine_Admin. Defines all hooks for the admin area.
+     * - CKH_Booking_Engine_Public. Defines all hooks for the public side of the site.
      *
      * Create an instance of the loader which will be used to register the hooks
      * with WordPress.
@@ -105,32 +105,32 @@ class CHK_Booking_Engine
          * The class responsible for orchestrating the actions and filters of the
          * core plugin.
          */
-        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-chk-booking-engine-loader.php';
+        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-ckh-booking-engine-loader.php';
 
         /**
          * The class responsible for defining internationalization functionality
          * of the plugin.
          */
-        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-chk-booking-engine-i18n.php';
+        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-ckh-booking-engine-i18n.php';
 
         /**
          * The class responsible for defining all actions that occur in the admin area.
          */
-        require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-chk-booking-engine-admin.php';
+        require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-ckh-booking-engine-admin.php';
 
         /**
          * The class responsible for defining all actions that occur in the public-facing
          * side of the site.
          */
-        require_once plugin_dir_path(dirname(__FILE__)) . 'public/class-chk-booking-engine-public.php';
+        require_once plugin_dir_path(dirname(__FILE__)) . 'public/class-ckh-booking-engine-public.php';
 
-        $this->loader = new Chk_Booking_Engine_Loader();
+        $this->loader = new CKH_Booking_Engine_Loader();
     }
 
     /**
      * Define the locale for this plugin for internationalization.
      *
-     * Uses the Chk_Booking_Engine_i18n class in order to set the domain and to register the hook
+     * Uses the CKH_Booking_Engine_i18n class in order to set the domain and to register the hook
      * with WordPress.
      *
      * @since    1.0.0
@@ -139,7 +139,7 @@ class CHK_Booking_Engine
     private function set_locale()
     {
 
-        $plugin_i18n = new Chk_Booking_Engine_i18n();
+        $plugin_i18n = new CKH_Booking_Engine_i18n();
 
         $this->loader->add_action('plugins_loaded', $plugin_i18n, 'load_plugin_textdomain');
     }
@@ -154,7 +154,7 @@ class CHK_Booking_Engine
     private function define_admin_hooks()
     {
 
-        $plugin_admin = new Chk_Booking_Engine_Admin($this->get_chk_booking_engine(), $this->get_version());
+        $plugin_admin = new CKH_Booking_Engine_Admin($this->get_ckh_booking_engine(), $this->get_version());
 
         $this->loader->add_action('admin_enqueue_scripts', $plugin_admin, 'enqueue_styles');
         $this->loader->add_action('admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts');
@@ -170,7 +170,7 @@ class CHK_Booking_Engine
     private function define_public_hooks()
     {
 
-        $plugin_public = new Chk_Booking_Engine_Public($this->get_chk_booking_engine(), $this->get_version());
+        $plugin_public = new CKH_Booking_Engine_Public($this->get_ckh_booking_engine(), $this->get_version());
 
         $this->loader->add_action('wp_enqueue_scripts', $plugin_public, 'enqueue_styles');
         $this->loader->add_action('wp_enqueue_scripts', $plugin_public, 'enqueue_scripts');
@@ -193,16 +193,16 @@ class CHK_Booking_Engine
      * @since     1.0.0
      * @return    string    The name of the plugin.
      */
-    public function get_chk_booking_engine()
+    public function get_ckh_booking_engine()
     {
-        return $this->chk_booking_engine;
+        return $this->ckh_booking_engine;
     }
 
     /**
      * The reference to the class that orchestrates the hooks with the plugin.
      *
      * @since     1.0.0
-     * @return    Chk_Booking_Engine_Loader    Orchestrates the hooks of the plugin.
+     * @return    CKH_Booking_Engine_Loader    Orchestrates the hooks of the plugin.
      */
     public function get_loader()
     {

@@ -6,11 +6,11 @@
  * Loads and defines the internationalization files for this plugin
  * so that it is ready for translation.
  *
- * @link       http://example.com
+ * @link       https://cakrasoft.com/
  * @since      1.0.0
  *
- * @package    Chk_Booking_Engine
- * @subpackage Chk_Booking_Engine/includes
+ * @package    CKH_Booking_Engine
+ * @subpackage CKH_Booking_Engine/includes
  */
 
 /**
@@ -20,11 +20,11 @@
  * so that it is ready for translation.
  *
  * @since      1.0.0
- * @package    Chk_Booking_Engine
- * @subpackage Chk_Booking_Engine/includes
- * @author     Your Name <email@example.com>
+ * @package    CKH_Booking_Engine
+ * @subpackage CKH_Booking_Engine/includes
+ * @author     cakrasoft <info@cakrasoft.com>
  */
-class CHK_Booking_Engine_i18n
+class CKH_Booking_Engine_i18n
 {
 
 
@@ -37,7 +37,7 @@ class CHK_Booking_Engine_i18n
 	{
 
 		load_plugin_textdomain(
-			'chk-booking-engine',
+			'ckh-booking-engine',
 			false,
 			dirname(dirname(plugin_basename(__FILE__))) . '/languages/'
 		);

@@ -3,11 +3,11 @@
 /**
  * Fired during plugin activation
  *
- * @link       http://example.com
+ * @link       https://cakrasoft.com/
  * @since      1.0.0
  *
- * @package    Chk_Booking_Engine
- * @subpackage Chk_Booking_Engine/includes
+ * @package    CKH_Booking_Engine
+ * @subpackage CKH_Booking_Engine/includes
  */
 
 /**
@@ -16,11 +16,11 @@
  * This class defines all code necessary to run during the plugin's activation.
  *
  * @since      1.0.0
- * @package    Chk_Booking_Engine
- * @subpackage Chk_Booking_Engine/includes
- * @author     Your Name <email@example.com>
+ * @package    CKH_Booking_Engine
+ * @subpackage CKH_Booking_Engine/includes
+ * @author     cakrasoft <info@cakrasoft.com>
  */
-class CHK_Booking_Engine_Activator
+class CKH_Booking_Engine_Activator
 {
 
     /**

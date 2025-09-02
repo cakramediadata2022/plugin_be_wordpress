@@ -3,11 +3,11 @@
 /**
  * The public-facing functionality of the plugin.
  *
- * @link       http://example.com
+ * @link       https://cakrasoft.com/
  * @since      1.0.0
  *
- * @package    Plugin_Name
- * @subpackage Plugin_Name/public
+ * @package    CKH_Booking_Engine
+ * @subpackage CKH_Booking_Engine/public
  */
 
 /**
@@ -16,11 +16,11 @@
  * Defines the plugin name, version, and two examples hooks for how to
  * enqueue the public-facing stylesheet and JavaScript.
  *
- * @package    Plugin_Name
- * @subpackage Plugin_Name/public
- * @author     Your Name <email@example.com>
+ * @package    CKH_Booking_Engine
+ * @subpackage CKH_Booking_Engine/public
+ * @author     cakrasoft <info@cakrasoft.com>
  */
-class CHK_Booking_Engine_Public
+class CKH_Booking_Engine_Public
 {
 
 	/**
@@ -28,9 +28,9 @@ class CHK_Booking_Engine_Public
 	 *
 	 * @since    1.0.0
 	 * @access   private
-	 * @var      string    $plugin_name    The ID of this plugin.
+	 * @var      string    $ckh_booking_engine    The ID of this plugin.
 	 */
-	private $plugin_name;
+	private $ckh_booking_engine;
 
 	/**
 	 * The version of this plugin.
@@ -48,10 +48,10 @@ class CHK_Booking_Engine_Public
 	 * @param      string    $plugin_name       The name of the plugin.
 	 * @param      string    $version    The version of this plugin.
 	 */
-	public function __construct($plugin_name, $version)
+	public function __construct($ckh_booking_engine, $version)
 	{
 
-		$this->plugin_name = $plugin_name;
+		$this->ckh_booking_engine = $ckh_booking_engine;
 		$this->version = $version;
 	}
 
@@ -67,15 +67,15 @@ class CHK_Booking_Engine_Public
 		 * This function is provided for demonstration purposes only.
 		 *
 		 * An instance of this class should be passed to the run() function
-		 * defined in Plugin_Name_Loader as all of the hooks are defined
+		 * defined in CKH_Booking_Engine_Loader as all of the hooks are defined
 		 * in that particular class.
 		 *
-		 * The Plugin_Name_Loader will then create the relationship
+		 * The CKH_Booking_Engine_Loader will then create the relationship
 		 * between the defined hooks and the functions defined in this
 		 * class.
 		 */
 
-		wp_enqueue_style($this->plugin_name, plugin_dir_url(__FILE__) . 'css/chk-booking-engine-public.css', array(), $this->version, 'all');
+		wp_enqueue_style($this->ckh_booking_engine, plugin_dir_url(__FILE__) . 'css/ckh-booking-engine-public.css', array(), $this->version, 'all');
 	}
 
 	/**
@@ -90,14 +90,14 @@ class CHK_Booking_Engine_Public
 		 * This function is provided for demonstration purposes only.
 		 *
 		 * An instance of this class should be passed to the run() function
-		 * defined in Plugin_Name_Loader as all of the hooks are defined
+		 * defined in CKH_Booking_Engine_Loader as all of the hooks are defined
 		 * in that particular class.
 		 *
-		 * The Plugin_Name_Loader will then create the relationship
+		 * The CKH_Booking_Engine_Loader will then create the relationship
 		 * between the defined hooks and the functions defined in this
 		 * class.
 		 */
 
-		wp_enqueue_script($this->plugin_name, plugin_dir_url(__FILE__) . 'js/chk-booking-engine-public.js', array('jquery'), $this->version, false);
+		wp_enqueue_script($this->ckh_booking_engine, plugin_dir_url(__FILE__) . 'js/ckh-booking-engine-public.js', array('jquery'), $this->version, false);
 	}
 }
