@@ -46,6 +46,6 @@ jobs:
           # Get current release notes
           CURRENT_NOTES="$(gh release view ${{ steps.get_release.outputs.tag_name }} --repo ${{ github.repository }} --json body -q .body)"
           # Add link
-          UPDATED_NOTES="${CURRENT_NOTES}\n\n[⬇️ Download ckh-booking-engine zip](${ASSET_URL})"
+          UPDATED_NOTES="${CURRENT_NOTES} [⬇️ Download ckh-booking-engine zip](${ASSET_URL})"
           # Update release note
           gh release edit ${{ steps.get_release.outputs.tag_name }} --repo ${{ github.repository }} --notes "${UPDATED_NOTES}"
