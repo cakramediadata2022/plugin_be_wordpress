@@ -9,22 +9,51 @@ A powerful, modern WordPress plugin for integrating a booking engine into your W
 - Modular codebase for easy extension
 - Ready for custom booking logic and UI
 
+
 ## Folder Structure
 ```
-wp-ckh-booking-engine/
-├── assets/
+ckh-booking-engine/
+├── admin/
+│   ├── class-ckh-booking-engine-admin.php
 │   ├── css/
-│   │   └── ckhbe-style.css
-│   └── js/
-│       └── alpine.min.js
+│   │   └── ckh_booking_engine-admin.css
+│   ├── js/
+│   │   ├── alpine.min.js
+│   │   └── ckh-booking-engine-admin.js
+│   └── partials/
+│       └── ckh-booking-engine-admin-display.php
+├── ckh-booking-engine.php
 ├── includes/
-│   └── class-ckhbe-main.php
-└── wp-booking-engine.php
+│   ├── class-ckh-booking-engine-activator.php
+│   ├── class-ckh-booking-engine-deactivator.php
+│   ├── class-ckh-booking-engine-i18n.php
+│   ├── class-ckh-booking-engine-loader.php
+│   └── class-ckh-booking-engine.php
+├── index.php
+├── languages/
+│   └── ckh-booking-engine.pot
+├── public/
+│   ├── class-ckh-booking-engine-public.php
+│   ├── css/
+│   │   └── ckh-booking-engine-public.css
+│   ├── js/
+│   │   └── ckh-booking-engine-public.js
+│   └── partials/
+│       └── ckh-booking-engine-public-display.php
+└── uninstall.php
 ```
 
+
+
+## Download
+
+Visit the [Releases page](https://github.com/cakramediadata2022/plugin_be_wordpress/releases/latest) to download the latest version of the CKH Booking Engine plugin.
+
+> The plugin zip file is named with its version, e.g., `ckh-booking-engine-1.0.0.zip`. Always choose the highest version number for the newest release.
+
 ## Getting Started
-1. Clone this repository or download the `wp-ckh-booking-engine` folder.
-2. Place the `wp-ckh-booking-engine` folder in your WordPress `wp-content/plugins/` directory.
+1. Download the plugin using the link above, or clone this repository.
+2. Place the extracted `wp-ckh-booking-engine` folder in your WordPress `wp-content/plugins/` directory.
 3. Activate the plugin from the WordPress admin dashboard.
 
 ## Development
