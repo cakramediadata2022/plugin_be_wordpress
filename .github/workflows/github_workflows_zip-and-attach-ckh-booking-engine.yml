@@ -1,0 +1,51 @@
+name: Zip ckh-booking-engine and attach to release
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  zip-upload-update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set variables
+        id: vars
+        run: |
+          FOLDER="ckh-booking-engine"
+          VERSION="${GITHUB_REF##*/}"
+          ZIP_NAME="${FOLDER}-${VERSION}.zip"
+          echo "FOLDER=${FOLDER}" >> $GITHUB_ENV
+          echo "VERSION=${VERSION}" >> $GITHUB_ENV
+          echo "ZIP_NAME=${ZIP_NAME}" >> $GITHUB_ENV
+
+      - name: Zip the folder
+        run: |
+          cd ${{ env.FOLDER }}/..
+          zip -r ${{ github.workspace }}/${{ env.ZIP_NAME }} $(basename ${{ env.FOLDER }})
+
+      - name: Upload zip as release asset
+        id: upload-release-asset
+        uses: softprops/action-gh-release@v2
+        with:
+          files: ${{ env.ZIP_NAME }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Get release tag
+        id: get_release
+        run: |
+          echo "tag_name=${GITHUB_REF##*/}" >> $GITHUB_OUTPUT
+
+      - name: Add asset link to release notes
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          ASSET_URL="https://github.com/${{ github.repository }}/releases/download/${{ steps.get_release.outputs.tag_name }}/${{ env.ZIP_NAME }}"
+          # Get current release notes
+          CURRENT_NOTES="$(gh release view ${{ steps.get_release.outputs.tag_name }} --repo ${{ github.repository }} --json body -q .body)"
+          # Add link
+          UPDATED_NOTES="${CURRENT_NOTES}\n\n[⬇️ Download ckh-booking-engine zip](${ASSET_URL})"
+          # Update release note
+          gh release edit ${{ steps.get_release.outputs.tag_name }} --repo ${{ github.repository }} --notes "${UPDATED_NOTES}"
