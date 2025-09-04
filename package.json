@@ -1,0 +1,22 @@
+{
+  "name": "plugin_be_wordpress",
+  "version": "1.0.0",
+  "description": "only setuped for developing style using tailwind css",
+  "main": "index.js",
+  "scripts": {
+    "dev": "npx @tailwindcss/cli -i ./src/css/input.css -o ./ckh-booking-engine/public/css/ckh-booking-engine-public.css --watch",
+    "prod": "npx @tailwindcss/cli -i ./src/css/input.css -o ./ckh-booking-engine/public/css/ckh-booking-engine-public.css --minify",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "zip": "node src/archiever/zip-plugin.js",
+    "build": "npm run prod && npm run zip"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@tailwindcss/cli": "^4.1.12",
+    "tailwindcss": "^4.1.12"
+  },
+  "devDependencies": {
+    "archiver": "^7.0.1"
+  }
+}
