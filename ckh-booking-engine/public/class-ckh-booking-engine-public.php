@@ -112,119 +112,157 @@ class CKH_Booking_Engine_Public
 	{
 		ob_start();
 ?>
-		<!-- Alpine.js -->
-		<script src="<?php echo plugin_dir_url(__FILE__); ?>js/alpine.min.js" defer></script>
-		<!-- Litepicker -->
 		<link rel="stylesheet" href="<?php echo plugin_dir_url(__FILE__); ?>css/litepicker.css" />
+		<link rel="stylesheet" href="<?php echo plugin_dir_url(__FILE__); ?>css/ckh-booking-engine-public.css" />
 		<script src="<?php echo plugin_dir_url(__FILE__); ?>js/litepicker.js"></script>
+		<script src="<?php echo plugin_dir_url(__FILE__); ?>js/alpine.min.js" defer></script>
 
-		<div class="max-w-2xl w-full bg-gray-50 p-6 rounded-2xl shadow-md space-y-4" x-data="{
-								 picker: null,
-								 search: '',
-								 guestsOpen: false,
-								 adults: 2,
-								 children: 0,
-								 pets: false,
-								 rooms: 1
-								}" x-init="
-									picker = new Litepicker({
-										element: $refs.dateRange,
-										singleMode: false,
-										numberOfMonths: window.innerWidth < 640 ? 1 : 2,
-										numberOfColumns: window.innerWidth < 640 ? 1 : 2,
-										minDate: new Date(),
-										autoApply: false,
-										format: 'YYYY-MM-DD',
-										resetButton: true,
-									});
-								">
-			<!-- Search Input -->
-			<div class="flex items-center border rounded-lg px-3 py-2 bg-white">
-				<input type="text" placeholder="Find your Perfect Stay..." x-model="search"
-					class="flex-1 outline-none text-gray-700 placeholder-gray-400" />
-				<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"
-					class="w-5 h-5 text-blue-500">
-					<path stroke-linecap="round" stroke-linejoin="round"
-						d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 104.5 4.5a7.5 7.5 0 0012.15 12.15z" />
-				</svg>
-			</div>
+		<script>
+			function initBookingEngine() {
+				return {
+					picker: null,
+					search: '',
+					guestsOpen: false,
+					adults: 2,
+					children: 0,
+					pets: false,
+					rooms: 1,
+					decreaseAdults() {
+						if (this.adults > 1) {
+							this.adults = this.adults + (-1);
+						}
+					},
+					increaseAdults() {
+						this.adults = this.adults + 1;
+					},
+					decreaseChildren() {
+						if (this.children > 0) {
+							this.children = this.children + (-1);
+						}
+					},
+					increaseChildren() {
+						this.children = this.children + 1;
+					},
+					decreaseRooms() {
+						if (this.rooms > 1) {
+							this.rooms = this.rooms + (-1);
+						}
+					},
+					increaseRooms() {
+						this.rooms = this.rooms + 1;
+					},
+					getGuestText() {
+						return this.adults + ' adults, ' + this.children + ' children' + (this.pets ? ', Pet friendly' : '');
+					},
+					getRoomText() {
+						return this.rooms + ' room';
+					},
+					performSearch() {
+						console.log('Search Data:', {
+							search: this.search,
+							dates: this.$refs.dateRange.value,
+							adults: this.adults,
+							children: this.children,
+							pets: this.pets,
+							rooms: this.rooms
+						});
+					},
+					initDatePicker() {
+						this.$nextTick(() => {
+							this.picker = new Litepicker({
+								element: this.$refs.dateRange,
+								singleMode: false,
+								numberOfMonths: window.innerWidth < 640 ? 1 : 2,
+								numberOfColumns: window.innerWidth < 640 ? 1 : 2,
+								minDate: new Date(),
+								autoApply: false,
+								format: 'YYYY-MM-DD',
+								resetButton: true,
+							});
+						});
+					}
+				}
+			}
+		</script>
 
-			<!-- Date + Guests in one row -->
-			<div class="flex flex-col md:flex-row gap-3">
-				<!-- Date Range Picker -->
-				<div class="flex-1 flex items-center gap-2 border rounded-lg px-3 py-2 bg-white cursor-pointer"
-					@click="picker.show()">
-					<input type="text" x-ref="dateRange" placeholder="Select date range"
-						class="w-full text-sm outline-none cursor-pointer" readonly />
+		<div class="ckh-booking-engine-wrapper">
+			<div class="ckh-container" x-data="initBookingEngine()" x-init="initDatePicker()">
+
+				<div class="ckh-flex ckh-items-center ckh-border ckh-rounded-lg ckh-px-3 ckh-py-2 ckh-bg-white">
+					<input type="text" placeholder="Find your Perfect Stay..." x-model="search"
+						class="ckh-flex-1 ckh-outline-none ckh-text-gray-700 ckh-placeholder-gray-400" />
+					<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"
+						class="ckh-w-5 ckh-h-5 ckh-text-blue-500">
+						<path stroke-linecap="round" stroke-linejoin="round"
+							d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 104.5 4.5a7.5 7.5 0 0012.15 12.15z" />
+					</svg>
 				</div>
 
-				<!-- Guests Dropdown -->
-				<div class="relative flex-1">
-					<div class="flex items-center justify-between gap-2 border rounded-lg px-3 py-2 bg-white cursor-pointer"
-						@click="guestsOpen = !guestsOpen">
-						<div>
-							<p class="text-sm font-medium text-gray-700 truncate"
-								x-text="`${adults} adult, ${children} children` + (pets ? ', Pet friendly' : '')"></p>
-							<p class="text-xs text-gray-400 truncate" x-text="`${rooms} room`"></p>
-						</div>
-						<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
-							stroke="currentColor" class="w-5 h-5 text-gray-400">
-							<path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
-						</svg>
+				<div class="ckh-flex ckh-flex-col md:ckh-flex-row ckh-gap-3">
+					<div class="ckh-flex-1 ckh-flex ckh-items-center ckh-gap-2 ckh-border ckh-rounded-lg ckh-px-3 ckh-py-2 ckh-bg-white ckh-cursor-pointer"
+						@click="picker.show()">
+						<input type="text" x-ref="dateRange" placeholder="Select date range"
+							class="ckh-w-full ckh-text-sm ckh-outline-none ckh-cursor-pointer" readonly />
 					</div>
 
-					<!-- Dropdown Panel -->
-					<div x-show="guestsOpen" @click.away="guestsOpen = false"
-						class="absolute z-10 mt-2 w-full bg-white border rounded-lg shadow-lg p-4 space-y-3">
-						<!-- Adults -->
-						<div class="flex items-center justify-between">
-							<span>Adults</span>
-							<div class="flex items-center gap-2">
-								<button class="px-2 py-1 border rounded" @click="if(adults>1) adults--">-</button>
-								<span x-text="adults"></span>
-								<button class="px-2 py-1 border rounded" @click="adults++">+</button>
+					<div class="ckh-relative ckh-flex-1">
+						<div class="ckh-flex ckh-items-center ckh-justify-between ckh-gap-2 ckh-border ckh-rounded-lg ckh-px-3 ckh-py-2 ckh-bg-white ckh-cursor-pointer"
+							@click="guestsOpen = !guestsOpen">
+							<div>
+								<p class="ckh-text-sm ckh-font-medium ckh-text-gray-700 ckh-truncate" x-text="getGuestText()"></p>
+								<p class="ckh-text-xs ckh-text-gray-400 ckh-truncate" x-text="getRoomText()"></p>
 							</div>
+							<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
+								stroke="currentColor" class="ckh-w-5 ckh-h-5 ckh-text-gray-400">
+								<path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+							</svg>
 						</div>
 
-						<!-- Children -->
-						<div class="flex items-center justify-between">
-							<span>Children</span>
-							<div class="flex items-center gap-2">
-								<button class="px-2 py-1 border rounded" @click="if(children>0) children--">-</button>
-								<span x-text="children"></span>
-								<button class="px-2 py-1 border rounded" @click="children++">+</button>
+						<div x-show="guestsOpen" @click.away="guestsOpen = false"
+							class="ckh-absolute ckh-z-10 ckh-mt-2 ckh-w-full ckh-bg-white ckh-border ckh-rounded-lg ckh-shadow-lg ckh-p-4 ckh-space-y-3">
+							<div class="ckh-flex ckh-items-center ckh-justify-between">
+								<span>Adults</span>
+								<div class="ckh-flex ckh-items-center ckh-gap-2">
+									<button class="ckh-btn-secondary" @click="decreaseAdults()">-</button>
+									<span x-text="adults"></span>
+									<button class="ckh-btn-secondary" @click="increaseAdults()">+</button>
+								</div>
 							</div>
-						</div>
 
-						<!-- Rooms -->
-						<div class="flex items-center justify-between">
-							<span>Rooms</span>
-							<div class="flex items-center gap-2">
-								<button class="px-2 py-1 border rounded" @click="if(rooms>1) rooms--">-</button>
-								<span x-text="rooms"></span>
-								<button class="px-2 py-1 border rounded" @click="rooms++">+</button>
+							<div class="ckh-flex ckh-items-center ckh-justify-between">
+								<span>Children</span>
+								<div class="ckh-flex ckh-items-center ckh-gap-2">
+									<button class="ckh-btn-secondary" @click="decreaseChildren()">-</button>
+									<span x-text="children"></span>
+									<button class="ckh-btn-secondary" @click="increaseChildren()">+</button>
+								</div>
 							</div>
-						</div>
 
-						<!-- Separator -->
-						<hr class="my-2 border-gray-200">
+							<div class="ckh-flex ckh-items-center ckh-justify-between">
+								<span>Rooms</span>
+								<div class="ckh-flex ckh-items-center ckh-gap-2">
+									<button class="ckh-btn-secondary" @click="decreaseRooms()">-</button>
+									<span x-text="rooms"></span>
+									<button class="ckh-btn-secondary" @click="increaseRooms()">+</button>
+								</div>
+							</div>
 
-						<!-- Pets as Checkbox -->
-						<div class="flex items-center justify-between">
-							<label class="flex items-center gap-2 cursor-pointer">
-								<input type="checkbox" x-model="pets" class="w-4 h-4 text-blue-600 border-gray-300 rounded">
-								<span>Pet friendly</span>
-							</label>
+							<hr class="ckh-my-2 ckh-border-gray-200">
+
+							<div class="ckh-flex ckh-items-center ckh-justify-between">
+								<label class="ckh-flex ckh-items-center ckh-gap-2 ckh-cursor-pointer">
+									<input type="checkbox" x-model="pets" class="ckh-w-4 ckh-h-4 ckh-text-blue-600 ckh-border-gray-300 ckh-rounded">
+									<span>Pet friendly</span>
+								</label>
+							</div>
 						</div>
 					</div>
 				</div>
-			</div>
 
-			<!-- Search Button -->
-			<button class="w-full bg-blue-500 text-white font-semibold py-2 rounded-lg shadow hover:bg-blue-600"
-				@click="alert(`Searching: ${search}, Dates: ${$refs.dateRange.value}, ${adults} adult, ${children} children, ${pets} pets, ${rooms} rooms`)">
-				SEARCH
-			</button>
+				<button class="ckh-btn-primary ckh-w-full" @click="performSearch()">
+					SEARCH
+				</button>
+			</div>
 		</div>
 <?php
 		return ob_get_clean();

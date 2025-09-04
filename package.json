@@ -4,8 +4,11 @@
   "description": "only setuped for developing style using tailwind css",
   "main": "index.js",
   "scripts": {
-    "dev": "npx @tailwindcss/cli -i ./src/css/input.css -o ./ckh-booking-engine/public/css/ckh-booking-engine-public.css --watch",
-    "prod": "npx @tailwindcss/cli -i ./src/css/input.css -o ./ckh-booking-engine/public/css/ckh-booking-engine-public.css --minify",
+    "dev": "unocss 'ckh-booking-engine/**/*.php' -o ./ckh-booking-engine/public/css/ckh-booking-engine-public.css --watch",
+    "dev:tailwind": "npx @tailwindcss/cli -i ./src/css/input.css -o ./ckh-booking-engine/public/css/ckh-booking-engine-public.css --watch",
+    "build:css": "unocss 'ckh-booking-engine/**/*.php' -o ./ckh-booking-engine/public/css/ckh-booking-engine-public.css --minify",
+    "prod": "npm run build:css",
+    "prod:tailwind": "npx @tailwindcss/cli -i ./src/css/input.css -o ./ckh-booking-engine/public/css/ckh-booking-engine-public.css --minify",
     "test": "echo \"Error: no test specified\" && exit 1",
     "zip": "node src/archiever/zip-plugin.js",
     "build": "npm run prod && npm run zip"
@@ -17,6 +20,10 @@
     "tailwindcss": "^4.1.12"
   },
   "devDependencies": {
-    "archiver": "^7.0.1"
+    "@unocss/cli": "^66.5.0",
+    "@unocss/preset-attributify": "^66.5.0",
+    "@unocss/preset-uno": "^66.5.0",
+    "archiver": "^7.0.1",
+    "unocss": "^66.5.0"
   }
 }
