@@ -112,60 +112,109 @@ class CKH_Booking_Engine_Public
 	{
 		ob_start();
 ?>
-		<!-- Alpine.js -->
-		<script src="<?php echo plugin_dir_url(__FILE__); ?>js/alpine.min.js" defer></script>
-		<!-- Litepicker -->
 		<link rel="stylesheet" href="<?php echo plugin_dir_url(__FILE__); ?>css/litepicker.css" />
+		<link rel="stylesheet" href="<?php echo plugin_dir_url(__FILE__); ?>css/ckh-booking-engine-public.css" />
 		<script src="<?php echo plugin_dir_url(__FILE__); ?>js/litepicker.js"></script>
+		<script src="<?php echo plugin_dir_url(__FILE__); ?>js/alpine.min.js" defer></script>
 
-		<div class="max-w-2xl w-full bg-gray-50 p-6 rounded-2xl shadow-md space-y-4" x-data="{
-								 picker: null,
-								 search: '',
-								 guestsOpen: false,
-								 adults: 2,
-								 children: 0,
-								 pets: false,
-								 rooms: 1
-								}" x-init="
-									picker = new Litepicker({
-										element: $refs.dateRange,
-										singleMode: false,
-										numberOfMonths: window.innerWidth < 640 ? 1 : 2,
-										numberOfColumns: window.innerWidth < 640 ? 1 : 2,
-										minDate: new Date(),
-										autoApply: false,
-										format: 'YYYY-MM-DD',
-										resetButton: true,
-									});
-								">
+		<script>
+			function initBookingEngine() {
+				return {
+					picker: null,
+					search: '',
+					guestsOpen: false,
+					adults: 2,
+					children: 0,
+					pets: false,
+					rooms: 1,
+					decreaseAdults() {
+						if (this.adults > 1) {
+							this.adults = this.adults + (-1);
+						}
+					},
+					increaseAdults() {
+						this.adults = this.adults + 1;
+					},
+					decreaseChildren() {
+						if (this.children > 0) {
+							this.children = this.children + (-1);
+						}
+					},
+					increaseChildren() {
+						this.children = this.children + 1;
+					},
+					decreaseRooms() {
+						if (this.rooms > 1) {
+							this.rooms = this.rooms + (-1);
+						}
+					},
+					increaseRooms() {
+						this.rooms = this.rooms + 1;
+					},
+					getGuestText() {
+						return this.adults + ' adults, ' + this.children + ' children' + (this.pets ? ', Pet friendly' : '');
+					},
+					getRoomText() {
+						return this.rooms + ' room';
+					},
+					performSearch() {
+						console.log('Search Data:', {
+							search: this.search,
+							dates: this.$refs.dateRange.value,
+							adults: this.adults,
+							children: this.children,
+							pets: this.pets,
+							rooms: this.rooms
+						});
+					},
+					initDatePicker() {
+						this.$nextTick(() => {
+							this.picker = new Litepicker({
+								element: this.$refs.dateRange,
+								singleMode: false,
+								numberOfMonths: window.innerWidth < 640 ? 1 : 2,
+								numberOfColumns: window.innerWidth < 640 ? 1 : 2,
+								minDate: new Date(),
+								autoApply: false,
+								format: 'YYYY-MM-DD',
+								resetButton: true,
+							});
+						});
+					}
+				}
+			}
+		</script>
+
+		<div class="max-w-2xl w-full bg-gray-50 p-6 rounded-2xl shadow-md space-y-4" x-data="initBookingEngine()"
+			x-init="initDatePicker()">
+
 			<!-- Search Input -->
-			<div class="flex items-center border rounded-lg px-3 py-2 bg-white">
-				<input type="text" placeholder="Find your Perfect Stay..." x-model="search"
-					class="flex-1 outline-none text-gray-700 placeholder-gray-400" />
-				<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"
-					class="w-5 h-5 text-blue-500">
-					<path stroke-linecap="round" stroke-linejoin="round"
-						d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 104.5 4.5a7.5 7.5 0 0012.15 12.15z" />
-				</svg>
-			</div>
+			<!-- <div class="flex items-center border border-gray-200 rounded-lg px-3 py-2 bg-white">
+            <input type="text" placeholder="Find your Perfect Stay..." x-model="search"
+                class="flex-1 outline-none text-gray-700 placeholder-gray-400" />
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
+                stroke="currentColor" class="w-5 h-5 text-blue-500">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 104.5 4.5a7.5 7.5 0 0012.15 12.15z" />
+            </svg>
+        </div> -->
 
 			<!-- Date + Guests in one row -->
 			<div class="flex flex-col md:flex-row gap-3">
 				<!-- Date Range Picker -->
-				<div class="flex-1 flex items-center gap-2 border rounded-lg px-3 py-2 bg-white cursor-pointer"
+				<div class="flex-1 flex items-center gap-2 border border-gray-200 rounded-lg px-3 bg-white cursor-pointer"
 					@click="picker.show()">
 					<input type="text" x-ref="dateRange" placeholder="Select date range"
-						class="w-full text-sm outline-none cursor-pointer" readonly />
+						class="w-full border-0 text-sm outline-none cursor-pointer" readonly />
 				</div>
 
 				<!-- Guests Dropdown -->
 				<div class="relative flex-1">
-					<div class="flex items-center justify-between gap-2 border rounded-lg px-3 py-2 bg-white cursor-pointer"
+					<div class="flex items-center justify-between gap-2 border border-gray-200 rounded-lg px-3 bg-white cursor-pointer"
 						@click="guestsOpen = !guestsOpen">
 						<div>
-							<p class="text-sm font-medium text-gray-700 truncate"
-								x-text="`${adults} adult, ${children} children` + (pets ? ', Pet friendly' : '')"></p>
-							<p class="text-xs text-gray-400 truncate" x-text="`${rooms} room`"></p>
+							<p class="text-sm mt-2 mb-0 font-medium text-gray-700 truncate" x-text="getGuestText()"></p>
+							<p class="text-xs mb-2 mt-0 text-gray-400 truncate" x-text="getRoomText()"></p>
 						</div>
 						<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
 							stroke="currentColor" class="w-5 h-5 text-gray-400">
@@ -175,14 +224,14 @@ class CKH_Booking_Engine_Public
 
 					<!-- Dropdown Panel -->
 					<div x-show="guestsOpen" @click.away="guestsOpen = false"
-						class="absolute z-10 mt-2 w-full bg-white border rounded-lg shadow-lg p-4 space-y-3">
+						class="absolute z-10 mt-2 w-full bg-white border border-gray-200 rounded-lg shadow-lg p-4 space-y-3">
 						<!-- Adults -->
 						<div class="flex items-center justify-between">
 							<span>Adults</span>
 							<div class="flex items-center gap-2">
-								<button class="px-2 py-1 border rounded" @click="if(adults>1) adults--">-</button>
+								<button class="px-2 py-1 border-0 border-gray-200 rounded" @click="decreaseAdults()">-</button>
 								<span x-text="adults"></span>
-								<button class="px-2 py-1 border rounded" @click="adults++">+</button>
+								<button class="px-2 py-1 border-0 border-gray-200 rounded" @click="increaseAdults()">+</button>
 							</div>
 						</div>
 
@@ -190,9 +239,11 @@ class CKH_Booking_Engine_Public
 						<div class="flex items-center justify-between">
 							<span>Children</span>
 							<div class="flex items-center gap-2">
-								<button class="px-2 py-1 border rounded" @click="if(children>0) children--">-</button>
+								<button class="px-2 py-1 border-0 border-gray-200 rounded"
+									@click="decreaseChildren()">-</button>
 								<span x-text="children"></span>
-								<button class="px-2 py-1 border rounded" @click="children++">+</button>
+								<button class="px-2 py-1 border-0 border-gray-200 rounded"
+									@click="increaseChildren()">+</button>
 							</div>
 						</div>
 
@@ -200,9 +251,9 @@ class CKH_Booking_Engine_Public
 						<div class="flex items-center justify-between">
 							<span>Rooms</span>
 							<div class="flex items-center gap-2">
-								<button class="px-2 py-1 border rounded" @click="if(rooms>1) rooms--">-</button>
+								<button class="px-2 py-1 border-0 border-gray-200 rounded" @click="decreaseRooms()">-</button>
 								<span x-text="rooms"></span>
-								<button class="px-2 py-1 border rounded" @click="rooms++">+</button>
+								<button class="px-2 py-1 border-0 border-gray-200 rounded" @click="increaseRooms()">+</button>
 							</div>
 						</div>
 
@@ -221,9 +272,10 @@ class CKH_Booking_Engine_Public
 			</div>
 
 			<!-- Search Button -->
-			<button class="w-full bg-blue-500 text-white font-semibold py-2 rounded-lg shadow hover:bg-blue-600"
-				@click="alert(`Searching: ${search}, Dates: ${$refs.dateRange.value}, ${adults} adult, ${children} children, ${pets} pets, ${rooms} rooms`)">
-				SEARCH
+			<button
+				class="w-full cursor-pointer bg-blue-500 border-0 text-white font-semibold py-2 rounded-lg shadow hover:bg-blue-600"
+				@click="performSearch()">
+				Book Now
 			</button>
 		</div>
 <?php
