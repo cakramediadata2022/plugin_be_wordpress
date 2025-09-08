@@ -4,11 +4,11 @@
   "description": "only setuped for developing style using tailwind css",
   "main": "index.js",
   "scripts": {
-    "dev": "unocss 'ckh-booking-engine/**/*.php' -o ./ckh-booking-engine/public/css/ckh-booking-engine-public.css --watch",
-    "dev:tailwind": "npx @tailwindcss/cli -i ./src/css/input.css -o ./ckh-booking-engine/public/css/ckh-booking-engine-public.css --watch",
-    "build:css": "unocss 'ckh-booking-engine/**/*.php' -o ./ckh-booking-engine/public/css/ckh-booking-engine-public.css --minify",
-    "prod": "npm run build:css",
-    "prod:tailwind": "npx @tailwindcss/cli -i ./src/css/input.css -o ./ckh-booking-engine/public/css/ckh-booking-engine-public.css --minify",
+    "dev": "unocss \"src/**/*.{html,js,ts,jsx,tsx,vue,svelte}\" -o ./src/css/output.css --watch",
+    "dev:plugin": "unocss \"ckh-booking-engine/**/*.php\" -o ./ckh-booking-engine/public/css/ckh-booking-engine-public.css --watch",
+    "build:dev": "unocss \"src/**/*.{html,js,ts,jsx,tsx,vue,svelte}\" -o ./src/css/output.css",
+    "build:plugin": "unocss \"ckh-booking-engine/**/*.php\" -o ./ckh-booking-engine/public/css/ckh-booking-engine-public.css --minify",
+    "prod": "npm run build:plugin",
     "test": "echo \"Error: no test specified\" && exit 1",
     "zip": "node src/archiever/zip-plugin.js",
     "build": "npm run prod && npm run zip"
