@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plugin</title>
+    <link rel="stylesheet" href="../css/output.css">
+
+</head>
+<body class="bg-gray-100 p-4">
+  <div
+    id="room-card"
+    class="flex flex-col mb-3 md:flex-row max-w-4xl mx-auto rounded-2xl shadow-lg overflow-hidden bg-white cursor-pointer transition-all duration-300 hover:shadow-xl hover:-translate-y-1"
+  >
+    <!-- Image -->
+    <img
+      src="https://picsum.photos/400/400"
+      alt="Room"
+      class="w-full md:w-72 h-64 md:h-auto object-cover"
+    />
+
+    <!-- Content -->
+    <div class="flex flex-col justify-between p-4 flex-1">
+      <!-- Title -->
+      <h2 class="text-lg md:text-xl font-semibold leading-snug">
+        Deluxe Room with Sea View
+      </h2>
+
+      <!-- Rating -->
+      <div class="flex items-center gap-2 mt-1">
+        <div class="text-yellow-500 text-sm">★★★★★</div>
+        <span class="text-xs md:text-sm text-gray-500">Place, Places</span>
+      </div>
+
+      <!-- Reviews -->
+      <p class="text-xs md:text-sm text-gray-500">(1312 Reviews)</p>
+
+      <!-- Categories -->
+      <div class="flex flex-wrap gap-1 mt-1">
+        <span class="px-2 py-0.5 rounded-full border-solid border-gray-300 text-[11px] md:text-xs">
+          Category 1
+        </span>
+        <span class="px-2 py-0.5 rounded-full border-solid border-gray-300 text-[11px] md:text-xs">
+          Category 2
+        </span>
+        <span class="px-2 py-0.5 rounded-full border-solid border-gray-300 text-[11px] md:text-xs">
+          Category 3
+        </span>
+      </div>
+
+      <!-- Description -->
+      <p class="text-xs md:text-sm text-gray-600 mt-2 line-clamp-2">
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi lacinia
+        felis et varius placerat.
+      </p>
+
+      <!-- Price + Features -->
+      <div class="flex flex-col md:flex-row items-start md:items-end justify-between gap-2">
+        <div class="text-left">
+          <p class="text-lg md:text-xl font-bold">$150/Night</p>
+          <p class="text-[11px] md:text-sm text-gray-500">
+            2 Queen sized bed, 2 Bathroom
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById("room-card").addEventListener("click", function () {
+      alert("Card clicked! You can trigger navigation or anything here.");
+      // Example: redirect
+      // window.location.href = "/details";
+    });
+  </script>
+</body>
+
+</html>
