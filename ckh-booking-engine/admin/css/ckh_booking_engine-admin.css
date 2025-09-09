@@ -1,4 +1,362 @@
 /**
- * All of the CSS for your admin-specific functionality should be
- * included in this file.
+ * CKH Booking Engine Admin Styles
+ *
+ * @link       https://cakrasoft.com/
+ * @since      1.0.0
+ *
+ * @package    CKH_Booking_Engine
+ * @subpackage CKH_Booking_Engine/admin/css
  */
+
+/* Admin Settings Page Layout */
+.ckh-booking-engine-admin-content {
+    float: left;
+    width: 75%;
+    margin-right: 2%;
+}
+
+.ckh-booking-engine-admin-sidebar {
+    float: right;
+    width: 23%;
+}
+
+.ckh-booking-engine-admin-header {
+    margin-bottom: 20px;
+    padding: 20px;
+    background: #fff;
+    border: 1px solid #ccd0d4;
+    border-radius: 4px;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+}
+
+.ckh-booking-engine-admin-header h2 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    color: #23282d;
+}
+
+.ckh-booking-engine-admin-header p {
+    margin-bottom: 0;
+    color: #666;
+    line-height: 1.5;
+}
+
+/* Settings Tabs */
+.ckh-booking-engine-settings-tabs {
+    background: #fff;
+    border: 1px solid #ccd0d4;
+    border-radius: 4px;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+}
+
+.ckh-booking-engine-settings-tabs .nav-tab-wrapper {
+    border-bottom: 1px solid #ccd0d4;
+    margin: 0;
+    padding: 0 20px;
+    background: #f9f9f9;
+    border-radius: 4px 4px 0 0;
+}
+
+.ckh-booking-engine-settings-tabs .nav-tab {
+    background: transparent;
+    border: none;
+    border-bottom: 3px solid transparent;
+    margin: 0;
+    padding: 15px 20px;
+    font-weight: 500;
+    text-decoration: none;
+    color: #666;
+    transition: all 0.3s ease;
+}
+
+.ckh-booking-engine-settings-tabs .nav-tab:hover {
+    color: #0073aa;
+    border-bottom-color: #0073aa;
+}
+
+.ckh-booking-engine-settings-tabs .nav-tab-active,
+.ckh-booking-engine-settings-tabs .nav-tab-active:hover {
+    color: #0073aa;
+    border-bottom-color: #0073aa;
+    background: #fff;
+}
+
+.tab-content {
+    display: none;
+    padding: 20px;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+/* Form Styling */
+.form-table th {
+    width: 200px;
+    padding: 15px 10px 15px 0;
+    vertical-align: top;
+    font-weight: 600;
+}
+
+.form-table td {
+    padding: 15px 10px;
+}
+
+.regular-text {
+    width: 300px;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    transition: border-color 0.3s ease;
+}
+
+.regular-text:focus {
+    border-color: #0073aa;
+    outline: none;
+    box-shadow: 0 0 0 1px #0073aa;
+}
+
+/* Color Picker Styling */
+.wp-picker-container {
+    display: inline-block;
+}
+
+.wp-picker-container .wp-color-result {
+    border-radius: 4px;
+    border: 1px solid #ddd;
+    transition: border-color 0.3s ease;
+}
+
+.wp-picker-container .wp-color-result:hover {
+    border-color: #0073aa;
+}
+
+/* Select Styling */
+select {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    background: #fff;
+    min-width: 200px;
+    transition: border-color 0.3s ease;
+}
+
+select:focus {
+    border-color: #0073aa;
+    outline: none;
+    box-shadow: 0 0 0 1px #0073aa;
+}
+
+/* Number Input Styling */
+input[type="number"] {
+    width: 80px;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    transition: border-color 0.3s ease;
+}
+
+input[type="number"]:focus {
+    border-color: #0073aa;
+    outline: none;
+    box-shadow: 0 0 0 1px #0073aa;
+}
+
+/* Preview Section */
+.ckh-booking-engine-preview {
+    margin-top: 20px;
+    padding: 20px;
+    background: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.ckh-booking-engine-preview h3 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    color: #23282d;
+}
+
+.preview-container {
+    background: white;
+    padding: 20px;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+}
+
+.preview-button {
+    display: inline-block;
+    padding: 12px 24px;
+    margin-bottom: 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    text-align: center;
+    transition: all 0.3s ease;
+    border: none;
+    text-decoration: none;
+}
+
+.preview-button:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.preview-form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+.preview-field {
+    display: flex;
+    flex-direction: column;
+}
+
+.preview-field:last-child {
+    grid-column: 1 / -1;
+}
+
+.preview-field label {
+    margin-bottom: 5px;
+    font-weight: 500;
+    color: #23282d;
+}
+
+.preview-field input,
+.preview-field select {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    transition: border-color 0.3s ease;
+}
+
+.preview-field input:focus,
+.preview-field select:focus {
+    outline: none;
+    box-shadow: 0 0 0 1px #0073aa;
+}
+
+/* Sidebar Styling */
+.sidebar-box {
+    background: #fff;
+    border: 1px solid #ccd0d4;
+    border-radius: 4px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+}
+
+.sidebar-box h3 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    color: #23282d;
+}
+
+.sidebar-box p {
+    color: #666;
+    line-height: 1.5;
+    margin-bottom: 15px;
+}
+
+.sidebar-box .button {
+    display: block;
+    text-align: center;
+    margin-top: 10px;
+    text-decoration: none;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+}
+
+.sidebar-box .button:hover {
+    transform: translateY(-1px);
+}
+
+/* Submit Button Styling */
+.button-primary {
+    background: #0073aa;
+    border-color: #0073aa;
+    color: #fff;
+    border-radius: 4px;
+    padding: 10px 20px;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    border: 1px solid #0073aa;
+}
+
+.button-primary:hover,
+.button-primary:focus {
+    background: #005a87;
+    border-color: #005a87;
+    color: #fff;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Responsive Design */
+@media screen and (max-width: 1200px) {
+    .ckh-booking-engine-admin-content {
+        width: 100%;
+        margin-right: 0;
+        float: none;
+    }
+
+    .ckh-booking-engine-admin-sidebar {
+        width: 100%;
+        float: none;
+        margin-top: 20px;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .ckh-booking-engine-settings-tabs .nav-tab-wrapper {
+        padding: 0 10px;
+    }
+
+    .ckh-booking-engine-settings-tabs .nav-tab {
+        padding: 12px 15px;
+        font-size: 14px;
+    }
+
+    .tab-content {
+        padding: 15px;
+    }
+
+    .form-table th,
+    .form-table td {
+        display: block;
+        width: 100%;
+        padding: 10px 0;
+    }
+
+    .form-table th {
+        border-bottom: 1px solid #f0f0f1;
+        margin-bottom: 10px;
+    }
+
+    .regular-text {
+        width: 100%;
+        max-width: 400px;
+    }
+
+    .preview-form {
+        grid-template-columns: 1fr;
+    }
+
+    .preview-field:last-child {
+        grid-column: 1;
+    }
+}
+
+/* Clearfix */
+.clearfix::after {
+    content: "";
+    clear: both;
+    display: table;
+}
