@@ -1,78 +1,215 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Plugin</title>
-    <link rel="stylesheet" href="../css/output.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Plugin</title>
+  <link rel="stylesheet" href="../css/output.css">
 
 </head>
-<body class="bg-gray-100 p-4">
-  <div
-    id="room-card"
-    class="flex flex-col mb-3 md:flex-row max-w-4xl mx-auto rounded-2xl shadow-lg overflow-hidden bg-white cursor-pointer transition-all duration-300 hover:shadow-xl hover:-translate-y-1"
-  >
-    <!-- Image -->
-    <img
-      src="https://picsum.photos/400/400"
-      alt="Room"
-      class="w-full md:w-72 h-64 md:h-auto object-cover"
-    />
 
-    <!-- Content -->
-    <div class="flex flex-col justify-between p-4 flex-1">
-      <!-- Title -->
-      <h2 class="text-lg md:text-xl font-semibold leading-snug">
-        Deluxe Room with Sea View
-      </h2>
+<body class="">
+  <div id="room-preview">
+    <div>
+      <div id="room-SR-8fgz2kaf2"
+        class="flex flex-col mb-3 md:flex-row w-full mx-auto rounded-2xl shadow-lg overflow-hidden bg-white cursor-pointer transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
+        <!-- Image -->
+        <img decoding="async"
+          src="https://chsres.com/api/plugin/v1/rooms/BOBAZAzt-CHAIN/THE-fdfcec/SR/image_1741661935129712307_opt.webp"
+          alt="Single Rooms" class="w-full md:w-72 h-64 md:h-auto object-cover">
 
-      <!-- Rating -->
-      <div class="flex items-center gap-2 mt-1">
-        <div class="text-yellow-500 text-sm">★★★★★</div>
-        <span class="text-xs md:text-sm text-gray-500">Place, Places</span>
-      </div>
+        <!-- Content -->
+        <div class="flex flex-col justify-between p-4 flex-1">
+          <!-- Title -->
+          <h2 class="text-lg md:text-xl font-semibold leading-snug">
+            Single Rooms
+          </h2>
 
-      <!-- Reviews -->
-      <p class="text-xs md:text-sm text-gray-500">(1312 Reviews)</p>
+          <!-- Rating -->
+          <div class="flex items-center gap-2 mt-1">
+            <div class="text-yellow-500 text-sm">★★★★★</div>
+            <span class="text-xs md:text-sm text-gray-500">Available Rooms: 6</span>
+          </div>
 
-      <!-- Categories -->
-      <div class="flex flex-wrap gap-1 mt-1">
-        <span class="px-2 py-0.5 rounded-full border-solid border-gray-300 text-[11px] md:text-xs">
-          Category 1
-        </span>
-        <span class="px-2 py-0.5 rounded-full border-solid border-gray-300 text-[11px] md:text-xs">
-          Category 2
-        </span>
-        <span class="px-2 py-0.5 rounded-full border-solid border-gray-300 text-[11px] md:text-xs">
-          Category 3
-        </span>
-      </div>
+          <!-- Room Details -->
+          <p class="text-xs md:text-sm text-gray-500">Max Adults: 2 | Max Children: 1</p>
 
-      <!-- Description -->
-      <p class="text-xs md:text-sm text-gray-600 mt-2 line-clamp-2">
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi lacinia
-        felis et varius placerat.
-      </p>
+          <!-- Categories -->
+          <div class="flex flex-wrap gap-1 mt-1">
+            <span class="px-2 py-0.5 rounded-full border-solid border-gray-300 text-[11px] md:text-xs">
+              2 Beds
+            </span>
+            <span class="px-2 py-0.5 rounded-full border-solid border-gray-300 text-[11px] md:text-xs">
+              Room Size: 1sqm
+            </span>
+            <span class="px-2 py-0.5 rounded-full border-solid border-gray-300 text-[11px] md:text-xs">
+              SR
+            </span>
+          </div>
 
-      <!-- Price + Features -->
-      <div class="flex flex-col md:flex-row items-start md:items-end justify-between gap-2">
-        <div class="text-left">
-          <p class="text-lg md:text-xl font-bold">$150/Night</p>
-          <p class="text-[11px] md:text-sm text-gray-500">
-            2 Queen sized bed, 2 Bathroom
+          <!-- Description -->
+          <p class="text-xs md:text-sm text-gray-600 mt-2 line-clamp-2">
+            Comfortable room with excellent amenities.
           </p>
+
+          <!-- Rate Selection -->
+          <div class="mt-3">
+
+            <!-- Cheapest Rate Display -->
+            <div class="flex items-center justify-between p-2 bg-gray-50 rounded-lg">
+              <div>
+                <p class="text-sm font-medium text-gray-800">Room Only</p>
+                <p class="text-xs text-gray-500">Normal room with no breakfast</p>
+              </div>
+              <div class="text-right">
+                <p class="text-lg font-bold text-blue-600">IDR 350,000</p>
+                <p class="text-xs text-gray-500">per night</p>
+              </div>
+            </div>
+
+            <!-- Show All Rates Button -->
+
+            <button onclick="toggleRates('room-SR-8fgz2kaf2')"
+              class="w-full mt-2 text-sm text-blue-600 hover:text-blue-800 flex items-center justify-center gap-1">
+              <span>View 1 more rate</span>
+              <svg class="w-4 h-4 transition-transform" id="room-SR-8fgz2kaf2-arrow" xmlns="http://www.w3.org/2000/svg"
+                fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+              </svg>
+            </button>
+
+            <!-- All Rates Dropdown -->
+            <div id="room-SR-8fgz2kaf2-rates" class="hidden mt-2 space-y-2">
+
+              <div
+                class="flex items-center justify-between p-2 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer"
+                onclick="selectRate('room-SR-8fgz2kaf2', 'WEKN', 'Room Breakfast', 550000, 'Room wifi and breakfast included')">
+                <div>
+                  <p class="text-sm font-medium text-gray-800">Room Breakfast</p>
+                  <p class="text-xs text-gray-500">Room wifi and breakfast included</p>
+                </div>
+                <div class="text-right">
+                  <p class="text-lg font-bold text-gray-800">IDR 550,000</p>
+                  <p class="text-xs text-gray-500">per night</p>
+                </div>
+              </div>
+
+            </div>
+
+
+          </div>
+
+          <!-- Book Now Button -->
+          <div class="mt-3">
+            <button class="w-full bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors">
+              Book Now
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div id="room-DLX-vagushcvp"
+        class="flex flex-col mb-3 md:flex-row w-full mx-auto rounded-2xl shadow-lg overflow-hidden bg-white cursor-pointer transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
+        <!-- Image -->
+        <img decoding="async"
+          src="https://chsres.com/api/plugin/v1/rooms/BOBAZAzt-CHAIN/THE-fdfcec/DLX/image_1737365205833022412_opt.webp"
+          alt="Deluxe" class="w-full md:w-72 h-64 md:h-auto object-cover">
+
+        <!-- Content -->
+        <div class="flex flex-col justify-between p-4 flex-1">
+          <!-- Title -->
+          <h2 class="text-lg md:text-xl font-semibold leading-snug">
+            Deluxe
+          </h2>
+
+          <!-- Rating -->
+          <div class="flex items-center gap-2 mt-1">
+            <div class="text-yellow-500 text-sm">★★★★★</div>
+            <span class="text-xs md:text-sm text-gray-500">Available Rooms: 4</span>
+          </div>
+
+          <!-- Room Details -->
+          <p class="text-xs md:text-sm text-gray-500">Max Adults: 3 | Max Children: 1</p>
+
+          <!-- Categories -->
+          <div class="flex flex-wrap gap-1 mt-1">
+            <span class="px-2 py-0.5 rounded-full border-solid border-gray-300 text-[11px] md:text-xs">
+              2 Beds
+            </span>
+            <span class="px-2 py-0.5 rounded-full border-solid border-gray-300 text-[11px] md:text-xs">
+              Room Size: 12sqm
+            </span>
+            <span class="px-2 py-0.5 rounded-full border-solid border-gray-300 text-[11px] md:text-xs">
+              DLX
+            </span>
+          </div>
+
+          <!-- Description -->
+          <p class="text-xs md:text-sm text-gray-600 mt-2 line-clamp-2">
+            The Deluxe Room offers a blend of comfort and elegance, designed for travelers seeking a cozy and tranquil
+            retreat. These rooms are thoughtfully furnished with modern amenities and a soothing color palette,
+            providing a perfect environment to unwind after a day by the beach.
+          </p>
+
+          <!-- Rate Selection -->
+          <div class="mt-3">
+
+            <!-- Cheapest Rate Display -->
+            <div class="flex items-center justify-between p-2 bg-gray-50 rounded-lg">
+              <div>
+                <p class="text-sm font-medium text-gray-800">Room Only</p>
+                <p class="text-xs text-gray-500">Normal room with no breakfast</p>
+              </div>
+              <div class="text-right">
+                <p class="text-lg font-bold text-blue-600">IDR 300,000</p>
+                <p class="text-xs text-gray-500">per night</p>
+              </div>
+            </div>
+
+            <!-- Show All Rates Button -->
+
+            <button onclick="toggleRates('room-DLX-vagushcvp')"
+              class="w-full mt-2 text-sm text-blue-600 hover:text-blue-800 flex items-center justify-center gap-1">
+              <span>View 1 more rate</span>
+              <svg class="w-4 h-4 transition-transform" id="room-DLX-vagushcvp-arrow" xmlns="http://www.w3.org/2000/svg"
+                fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+              </svg>
+            </button>
+
+            <!-- All Rates Dropdown -->
+            <div id="room-DLX-vagushcvp-rates" class="hidden mt-2 space-y-2">
+
+              <div
+                class="flex items-center justify-between p-2 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer"
+                onclick="selectRate('room-DLX-vagushcvp', 'WEKN', 'Room Breakfast', 500000, 'Room wifi and breakfast included')">
+                <div>
+                  <p class="text-sm font-medium text-gray-800">Room Breakfast</p>
+                  <p class="text-xs text-gray-500">Room wifi and breakfast included</p>
+                </div>
+                <div class="text-right">
+                  <p class="text-lg font-bold text-gray-800">IDR 500,000</p>
+                  <p class="text-xs text-gray-500">per night</p>
+                </div>
+              </div>
+
+            </div>
+
+
+          </div>
+
+          <!-- Book Now Button -->
+          <div class="mt-3">
+            <button class="w-full bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors">
+              Book Now
+            </button>
+          </div>
         </div>
       </div>
     </div>
   </div>
-
-  <script>
-    document.getElementById("room-card").addEventListener("click", function () {
-      alert("Card clicked! You can trigger navigation or anything here.");
-      // Example: redirect
-      // window.location.href = "/details";
-    });
-  </script>
 </body>
 
 </html>
