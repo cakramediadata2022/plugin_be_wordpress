@@ -233,12 +233,6 @@
 							if (response.data.debug_info.test_url) {
 								message += '<strong>Test URL:</strong> ' + response.data.debug_info.test_url + '<br>';
 							}
-							if (response.data.debug_info.headers_sent) {
-								message += '<strong>Headers Sent:</strong><br>';
-								for (var header in response.data.debug_info.headers_sent) {
-									message += '&nbsp;&nbsp;' + header + ': ' + response.data.debug_info.headers_sent[header] + '<br>';
-								}
-							}
 						}
 
 						$resultDiv.html('<div class="notice ' + noticeClass + ' inline"><p>' + message + '</p></div>');
