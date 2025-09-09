@@ -232,6 +232,11 @@ class CKH_Booking_Engine_Public
 	 */
 	public function ckh_booking_engine_shortcode($atts)
 	{
+		// Get settings for JavaScript variables
+		$settings = CKH_Booking_Engine_Settings::get_settings();
+		$api_key = $settings['api_key'];
+		$api_url = CKH_Booking_Engine::get_api_url();
+
 		ob_start();
 ?>
 		<link rel="stylesheet" href="<?php echo plugin_dir_url(__FILE__); ?>css/litepicker.css" />
@@ -240,6 +245,13 @@ class CKH_Booking_Engine_Public
 		<script src="<?php echo plugin_dir_url(__FILE__); ?>js/alpine.min.js" defer></script>
 
 		<script>
+			// CKH Booking Engine Configuration
+			const ckhBookingConfig = {
+				apiKey: '<?php echo esc_js($api_key); ?>',
+				apiUrl: '<?php echo esc_js($api_url); ?>',
+				siteUrl: '<?php echo esc_js(get_site_url()); ?>'
+			};
+
 			function initBookingEngine() {
 				return {
 					picker: null,
@@ -249,6 +261,8 @@ class CKH_Booking_Engine_Public
 					children: 0,
 					pets: false,
 					rooms: 1,
+					loading: false,
+					dateRanges: "",
 					decreaseAdults() {
 						if (this.adults > 1) {
 							this.adults = this.adults + (-1);
@@ -279,38 +293,319 @@ class CKH_Booking_Engine_Public
 					getRoomText() {
 						return this.rooms + ' room';
 					},
-					performSearch() {
+					async performSearch() {
+						this.loading = true;
+						// Parse date range string to get start and end date in YYYY-MM-DD format
+						let dateRange = this.$refs.dateRange.value;
+						let [startDate, endDate] = dateRange.split(' - ');
+						// Now startDate and endDate are in YYYY-MM-DD format
+						console.log('Parsed Dates:', {
+							startDate,
+							endDate
+						});
 						console.log('Search Data:', {
 							search: this.search,
-							dates: this.$refs.dateRange.value,
+							dates: dateRange,
+							startDate: startDate,
+							endDate: endDate,
 							adults: this.adults,
 							children: this.children,
 							pets: this.pets,
 							rooms: this.rooms
 						});
+
+						await this.requestToBookingEngine(startDate, endDate, this.adults, this.children);
+						this.loading = false;
 					},
-					initDatePicker() {
+					async initDatePicker() {
+						this.initDefaultData();
 						this.$nextTick(() => {
 							this.picker = new Litepicker({
 								element: this.$refs.dateRange,
 								singleMode: false,
 								numberOfMonths: window.innerWidth < 640 ? 1 : 2,
 								numberOfColumns: window.innerWidth < 640 ? 1 : 2,
-								minDate: new Date(),
 								autoApply: false,
 								format: 'YYYY-MM-DD',
-								resetButton: true,
+								resetButton: false,
 								mobileFriendly: true,
+								startDate: this.dateRanges.split(' - ')[0],
+								endDate: this.dateRanges.split(' - ')[1],
 							});
 						});
+						await this.requestToBookingEngine(this.dateRanges.split(' - ')[0], this.dateRanges.split(' - ')[1], this
+							.adults, this.children);
+					},
+					initDefaultData() {
+						let today = new Date();
+						let tomorrow = new Date();
+						tomorrow.setDate(today.getDate() + 1);
+
+						function formatDate(date) {
+							return date.toISOString().slice(0, 10);
+						}
+
+						this.dateRanges = formatDate(today) + " - " + formatDate(tomorrow);
+					},
+					async requestToBookingEngine(start_date, end_date, adults, children) {
+						// Implement the API request logic here
+						console.log('Function parameters:', {
+							start_date,
+							end_date,
+							adults,
+							children
+						});
+
+						const myHeaders = new Headers();
+						myHeaders.append("token", ckhBookingConfig.apiKey);
+						myHeaders.append("Origin", ckhBookingConfig.siteUrl);
+
+						const requestOptions = {
+							method: "GET",
+							headers: myHeaders,
+							redirect: "follow"
+						};
+
+						// Construct URL parameters manually to avoid WordPress HTML encoding
+						const params = new URLSearchParams({
+							'StartDate': start_date,
+							'EndDate': end_date,
+							'Adults': adults,
+							'Children': children
+						});
+						const apiUrl = `${ckhBookingConfig.apiUrl}/roomavailability?${params.toString()}`;
+						console.log('Request URL:', apiUrl);
+						await fetch(apiUrl, requestOptions)
+							.then((response) => response.json())
+							.then((data) => {
+								console.log('API Response:', data);
+								this.displayRooms(data);
+							})
+							.catch((error) => {
+								console.error('API Error:', error);
+								this.displayError();
+							});
+					},
+					displayRooms(data) {
+						const roomPreview = document.getElementById('room-preview');
+
+						if (data.StatusCode === 0 && data.Result && data.Result.length > 0) {
+							// Clear existing content
+							roomPreview.innerHTML = '';
+
+							// Loop through rooms and create cards
+							data.Result.forEach(room => {
+								const roomCard = this.createRoomCard(room);
+								roomPreview.appendChild(roomCard);
+							});
+						} else {
+							roomPreview.innerHTML =
+								'<div class="text-center py-8 text-gray-500">No rooms available for the selected dates.</div>';
+						}
+					},
+					createRoomCard(room) {
+						const roomDiv = document.createElement('div');
+						const imageUrl = room.image_details && room.image_details[0] ? room.image_details[0].image_name :
+							'https://picsum.photos/400/400';
+
+						// Find the cheapest rate
+						const rates = room.rate_details || [];
+						const availableRates = rates.filter(rate => rate.is_close === 0);
+						const cheapestRate = availableRates.length > 0 ?
+							availableRates.reduce((min, rate) => rate.rate_price < min.rate_price ? rate : min) : null;
+
+						// Generate unique ID for this room card
+						const roomId = `room-${room.room_code}-${Math.random().toString(36).substr(2, 9)}`;
+
+						roomDiv.innerHTML = `
+                        <div id="${roomId}" class="flex flex-col mb-3 md:flex-row max-w-4xl mx-auto rounded-2xl shadow-lg overflow-hidden bg-white cursor-pointer transition-all duration-300 hover:shadow-xl hover:-translate-y-1" data-all-rates='${JSON.stringify(availableRates)}' data-current-rate='${cheapestRate ? cheapestRate.rate_code : ''}'>
+                            <!-- Image -->
+                            <img src="${imageUrl}" alt="${room.room_name}" class="w-full md:w-72 h-64 md:h-auto object-cover" />
+
+                            <!-- Content -->
+                            <div class="flex flex-col justify-between p-4 flex-1">
+                                <!-- Title -->
+                                <h2 class="text-lg md:text-xl font-semibold leading-snug">
+                                    ${room.room_name}
+                                </h2>
+
+                                <!-- Rating -->
+                                <div class="flex items-center gap-2 mt-1">
+                                    <div class="text-yellow-500 text-sm">★★★★★</div>
+                                    <span class="text-xs md:text-sm text-gray-500">Available Rooms: ${room.number_of_rooms}</span>
+                                </div>
+
+                                <!-- Room Details -->
+                                <p class="text-xs md:text-sm text-gray-500">Max Adults: ${room.room_max_adult} | Max Children: ${room.room_max_children}</p>
+
+                                <!-- Categories -->
+                                <div class="flex flex-wrap gap-1 mt-1">
+                                    <span class="px-2 py-0.5 rounded-full border-solid border-gray-300 text-[11px] md:text-xs">
+                                        ${room.room_bed} Bed${room.room_bed > 1 ? 's' : ''}
+                                    </span>
+                                    <span class="px-2 py-0.5 rounded-full border-solid border-gray-300 text-[11px] md:text-xs">
+                                        Room Size: ${room.room_size}sqm
+                                    </span>
+                                    <span class="px-2 py-0.5 rounded-full border-solid border-gray-300 text-[11px] md:text-xs">
+                                        ${room.room_code}
+                                    </span>
+                                </div>
+
+                                <!-- Description -->
+                                <p class="text-xs md:text-sm text-gray-600 mt-2 line-clamp-2">
+                                    ${room.room_description || 'Comfortable room with excellent amenities.'}
+                                </p>
+
+                                <!-- Rate Selection -->
+                                <div class="mt-3">
+                                    ${cheapestRate ? `
+                                    <!-- Cheapest Rate Display -->
+                                    <div class="flex items-center justify-between p-2 bg-gray-50 rounded-lg">
+                                        <div>
+                                            <p class="text-sm font-medium text-gray-800">${cheapestRate.rate_name}</p>
+                                            <p class="text-xs text-gray-500">${cheapestRate.rate_description}</p>
+                                        </div>
+                                        <div class="text-right">
+                                            <p class="text-lg font-bold text-blue-600">IDR ${cheapestRate.rate_price.toLocaleString()}</p>
+                                            <p class="text-xs text-gray-500">per night</p>
+                                        </div>
+                                    </div>
+
+                                    <!-- Show All Rates Button -->
+                                    ${availableRates.length > 1 ? `
+                                    <button onclick="toggleRates('${roomId}')" class="w-full mt-2 text-sm text-blue-600 hover:text-blue-800 flex items-center justify-center gap-1">
+                                        <span>View ${availableRates.length - 1} more rate${availableRates.length > 2 ? 's' : ''}</span>
+                                        <svg class="w-4 h-4 transition-transform" id="${roomId}-arrow" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                        </svg>
+                                    </button>
+
+                                    <!-- All Rates Dropdown -->
+                                    <div id="${roomId}-rates" class="hidden mt-2 space-y-2">
+                                        ${availableRates.slice(1).map(rate => `
+                                            <div class="flex items-center justify-between p-2 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer" onclick="selectRate('${roomId}', '${rate.rate_code}', '${rate.rate_name}', ${rate.rate_price}, '${rate.rate_description}')">
+                                                <div>
+                                                    <p class="text-sm font-medium text-gray-800">${rate.rate_name}</p>
+                                                    <p class="text-xs text-gray-500">${rate.rate_description}</p>
+                                                </div>
+                                                <div class="text-right">
+                                                    <p class="text-lg font-bold text-gray-800">IDR ${rate.rate_price.toLocaleString()}</p>
+                                                    <p class="text-xs text-gray-500">per night</p>
+                                                </div>
+                                            </div>
+                                        `).join('')}
+                                    </div>
+                                    ` : ''}
+                                    ` : `
+                                    <div class="p-2 bg-red-50 rounded-lg">
+                                        <p class="text-sm text-red-600">No rates available</p>
+                                    </div>
+                                    `}
+                                </div>
+
+                                <!-- Book Now Button -->
+                                <div class="mt-3">
+                                    <button class="w-full bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors" ${!cheapestRate ? 'disabled' : ''}>
+                                        ${cheapestRate ? 'Book Now' : 'Not Available'}
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+
+						return roomDiv;
+					},
+					displayError() {
+						const roomPreview = document.getElementById('room-preview');
+						roomPreview.innerHTML =
+							'<div class="text-center py-8 text-red-500">Error loading rooms. Please try again.</div>';
 					}
 				}
+			}
+			// Global functions for rate selection
+			function toggleRates(roomId) {
+				const ratesDiv = document.getElementById(roomId + '-rates');
+				const arrow = document.getElementById(roomId + '-arrow');
+
+				if (ratesDiv.classList.contains('hidden')) {
+					ratesDiv.classList.remove('hidden');
+					arrow.style.transform = 'rotate(180deg)';
+				} else {
+					ratesDiv.classList.add('hidden');
+					arrow.style.transform = 'rotate(0deg)';
+				}
+			}
+
+			function selectRate(roomId, rateCode, rateName, ratePrice, rateDescription) {
+				// Find the room card
+				const roomCard = document.getElementById(roomId);
+				if (!roomCard) {
+					console.error('Room card not found for ID:', roomId);
+					return;
+				}
+				const mainRateDisplay = roomCard.querySelector('.bg-gray-50');
+				if (!mainRateDisplay) {
+					console.error('Rate display not found in room card:', roomId);
+					return;
+				}
+
+				// Update the main rate display
+				mainRateDisplay.innerHTML = `
+                <div>
+                    <p class="text-sm font-medium text-gray-800">${rateName}</p>
+                    <p class="text-xs text-gray-500">${rateDescription}</p>
+                </div>
+                <div class="text-right">
+                    <p class="text-lg font-bold text-blue-600">IDR ${ratePrice.toLocaleString()}</p>
+                    <p class="text-xs text-gray-500">per night</p>
+                </div>
+            `;
+
+				// Get all available rates and filter out the selected one
+				const allRates = JSON.parse(roomCard.dataset.allRates);
+				const otherRates = allRates.filter(rate => rate.rate_code !== rateCode);
+
+				// Update the dropdown content
+				const ratesDropdown = document.getElementById(roomId + '-rates');
+				ratesDropdown.innerHTML = otherRates.map(rate => `
+					<div class="flex items-center justify-between p-2 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer" onclick="selectRate('${roomId}', '${rate.rate_code}', '${rate.rate_name}', ${rate.rate_price}, '${rate.rate_description}')">
+						<div>
+							<p class="text-sm font-medium text-gray-800">${rate.rate_name}</p>
+							<p class="text-xs text-gray-500">${rate.rate_description}</p>
+						</div>
+						<div class="text-right">
+							<p class="text-lg font-bold text-gray-800">IDR ${rate.rate_price.toLocaleString()}</p>
+							<p class="text-xs text-gray-500">per night</p>
+						</div>
+					</div>
+				`).join('');
+
+				// Update the "View more rates" text
+				const viewMoreButton = roomCard.querySelector(`[onclick*="toggleRates('${roomId}')"] span`);
+				const remainingCount = otherRates.length;
+				if (remainingCount > 0 && viewMoreButton) {
+					viewMoreButton.textContent = `View ${remainingCount} more rate${remainingCount > 1 ? 's' : ''}`;
+				}
+
+				// Update the current rate in dataset
+				roomCard.dataset.currentRate = rateCode;
+
+				// Hide the rates dropdown
+				toggleRates(roomId);
+
+				console.log('Selected rate:', {
+					roomId,
+					rateCode,
+					rateName,
+					ratePrice,
+					rateDescription
+				});
 			}
 		</script>
 
 		<!-- CKH Booking Engine - Customizable with Admin Settings -->
 		<div class="ckh-booking-engine-wrapper">
-			<div class="ckh-be-container max-w-2xl w-full p-3 sm-p-4 md-p-5 lg-p-6 rounded-2xl shadow-md space-y-4"
+			<div class="ckh-be-container w-full p-3 sm-p-4 md-p-5 lg-p-6 rounded-2xl shadow-md space-y-4"
 				x-data="initBookingEngine()" x-init="initDatePicker()">
 
 				<!-- Date + Guests in one row -->
@@ -360,23 +655,34 @@ class CKH_Booking_Engine_Public
 							</div>
 
 							<!-- Rooms -->
-							<div class="flex items-center justify-between">
+							<!-- <div class="flex items-center justify-between">
 								<span>Rooms</span>
 								<div class="flex items-center gap-2">
 									<button class="ckh-be-counter-btn px-2 py-1" @click="decreaseRooms()">-</button>
 									<span x-text="rooms"></span>
 									<button class="ckh-be-counter-btn px-2 py-1" @click="increaseRooms()">+</button>
 								</div>
-							</div>
+							</div> -->
 						</div>
 					</div>
 				</div>
 
 				<!-- Search Button -->
-				<button class="ckh-be-button w-full cursor-pointer font-semibold py-2 shadow" @click="performSearch()">
-					Book Now
+				<button
+					class="w-full cursor-pointer bg-blue-500 border-0 text-white font-semibold py-2 rounded-lg shadow hover:bg-blue-600 flex items-center justify-center gap-2"
+					:disabled="loading" @click="performSearch()">
+					<template x-if="loading">
+						<svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none"
+							viewBox="0 0 24 24">
+							<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+							<path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+						</svg>
+					</template>
+					<span x-text="loading ? 'Processing...' : 'Book Now'"></span>
 				</button>
 			</div>
+		</div>
+		<div id="room-preview">
 		</div>
 <?php
 		return ob_get_clean();
