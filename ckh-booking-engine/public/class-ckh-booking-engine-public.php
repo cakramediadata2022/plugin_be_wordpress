@@ -78,6 +78,125 @@ class CKH_Booking_Engine_Public
 		 */
 
 		wp_enqueue_style($this->ckh_booking_engine, plugin_dir_url(__FILE__) . 'css/ckh-booking-engine-public.css', array(), $this->version, 'all');
+
+		// Add custom CSS variables for styling
+		$this->add_custom_css_variables();
+	}
+
+	/**
+	 * Add custom CSS variables based on plugin settings
+	 *
+	 * @since    1.0.0
+	 */
+	private function add_custom_css_variables()
+	{
+		$settings = CKH_Booking_Engine_Settings::get_settings();
+
+		// Generate scoped CSS for the booking engine
+		$custom_css = "
+		/* CKH Booking Engine Custom Styles */
+		.ckh-booking-engine-wrapper {
+			--ckh-primary-color: {$settings['primary_color']};
+			--ckh-secondary-color: {$settings['secondary_color']};
+			--ckh-accent-color: {$settings['accent_color']};
+			--ckh-button-color: {$settings['button_color']};
+			--ckh-button-text-color: {$settings['button_text_color']};
+			--ckh-font-family: {$settings['font_family']};
+			--ckh-font-size: {$settings['font_size']}px;
+			--ckh-border-radius: {$settings['border_radius']}px;
+		}
+		
+		/* Apply settings to booking engine components */
+		.ckh-booking-engine-wrapper {
+			font-family: var(--ckh-font-family) !important;
+			font-size: var(--ckh-font-size) !important;
+		}
+		
+		.ckh-booking-engine-wrapper .ckh-be-container {
+			border-radius: var(--ckh-border-radius) !important;
+			background-color: var(--ckh-secondary-color) !important;
+		}
+		
+		.ckh-booking-engine-wrapper .ckh-be-button {
+			background-color: var(--ckh-button-color) !important;
+			color: var(--ckh-button-text-color) !important;
+			border-radius: var(--ckh-border-radius) !important;
+			border: none !important;
+			font-family: var(--ckh-font-family) !important;
+			font-size: var(--ckh-font-size) !important;
+			transition: all 0.3s ease !important;
+		}
+		
+		.ckh-booking-engine-wrapper .ckh-be-button:hover {
+			opacity: 0.9 !important;
+			transform: translateY(-1px) !important;
+		}
+		
+		.ckh-booking-engine-wrapper .ckh-be-input {
+			border-radius: var(--ckh-border-radius) !important;
+			font-family: var(--ckh-font-family) !important;
+			font-size: var(--ckh-font-size) !important;
+			border: 1px solid var(--ckh-secondary-color) !important;
+		}
+		
+		.ckh-booking-engine-wrapper .ckh-be-input:focus {
+			border-color: var(--ckh-primary-color) !important;
+			box-shadow: 0 0 0 2px rgba(" . $this->hex_to_rgb($settings['primary_color']) . ", 0.2) !important;
+		}
+		
+		.ckh-booking-engine-wrapper .ckh-be-card {
+			background-color: white !important;
+			border-radius: var(--ckh-border-radius) !important;
+			border: 1px solid var(--ckh-secondary-color) !important;
+		}
+		
+		.ckh-booking-engine-wrapper .ckh-be-text-primary {
+			color: var(--ckh-primary-color) !important;
+		}
+		
+		.ckh-booking-engine-wrapper .ckh-be-text-accent {
+			color: var(--ckh-accent-color) !important;
+		}
+		
+		.ckh-booking-engine-wrapper .ckh-be-dropdown {
+			background-color: white !important;
+			border-radius: var(--ckh-border-radius) !important;
+			border: 1px solid var(--ckh-secondary-color) !important;
+		}
+		
+		.ckh-booking-engine-wrapper .ckh-be-counter-btn {
+			background-color: var(--ckh-secondary-color) !important;
+			color: var(--ckh-primary-color) !important;
+			border-radius: var(--ckh-border-radius) !important;
+			border: 1px solid var(--ckh-primary-color) !important;
+			font-family: var(--ckh-font-family) !important;
+			transition: all 0.2s ease !important;
+		}
+		
+		.ckh-booking-engine-wrapper .ckh-be-counter-btn:hover {
+			background-color: var(--ckh-primary-color) !important;
+			color: white !important;
+		}
+		";
+
+		wp_add_inline_style($this->ckh_booking_engine, $custom_css);
+	}
+
+	/**
+	 * Convert hex color to RGB values
+	 *
+	 * @since    1.0.0
+	 */
+	private function hex_to_rgb($hex)
+	{
+		$hex = ltrim($hex, '#');
+		if (strlen($hex) == 3) {
+			$hex = $hex[0] . $hex[0] . $hex[1] . $hex[1] . $hex[2] . $hex[2];
+		}
+		$r = hexdec(substr($hex, 0, 2));
+		$g = hexdec(substr($hex, 2, 2));
+		$b = hexdec(substr($hex, 4, 2));
+		return "$r, $g, $b";
 	}
 
 	/**
@@ -99,6 +218,9 @@ class CKH_Booking_Engine_Public
 		 * class.
 		 */
 		wp_enqueue_script($this->ckh_booking_engine, plugin_dir_url(__FILE__) . 'js/ckh-booking-engine-public.js', array('jquery'), $this->version, false);
+
+		// Localize script with plugin settings
+		wp_localize_script($this->ckh_booking_engine, 'ckh_booking_engine', CKH_Booking_Engine_Settings::get_js_settings());
 	}
 
 	/**
@@ -178,6 +300,7 @@ class CKH_Booking_Engine_Public
 								autoApply: false,
 								format: 'YYYY-MM-DD',
 								resetButton: true,
+								mobileFriendly: true,
 							});
 						});
 					}
@@ -185,98 +308,75 @@ class CKH_Booking_Engine_Public
 			}
 		</script>
 
-		<div class="max-w-2xl w-full bg-gray-50 p-6 rounded-2xl shadow-md space-y-4" x-data="initBookingEngine()"
-			x-init="initDatePicker()">
+		<!-- CKH Booking Engine - Customizable with Admin Settings -->
+		<div class="ckh-booking-engine-wrapper">
+			<div class="ckh-be-container max-w-2xl w-full p-3 sm-p-4 md-p-5 lg-p-6 rounded-2xl shadow-md space-y-4"
+				x-data="initBookingEngine()" x-init="initDatePicker()">
 
-			<!-- Search Input -->
-			<!-- <div class="flex items-center border border-gray-200 rounded-lg px-3 py-2 bg-white">
-            <input type="text" placeholder="Find your Perfect Stay..." x-model="search"
-                class="flex-1 outline-none text-gray-700 placeholder-gray-400" />
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
-                stroke="currentColor" class="w-5 h-5 text-blue-500">
-                <path stroke-linecap="round" stroke-linejoin="round"
-                    d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 104.5 4.5a7.5 7.5 0 0012.15 12.15z" />
-            </svg>
-        </div> -->
-
-			<!-- Date + Guests in one row -->
-			<div class="flex flex-col md:flex-row gap-3">
-				<!-- Date Range Picker -->
-				<div class="flex-1 flex items-center gap-2 border border-gray-200 rounded-lg px-3 bg-white cursor-pointer"
-					@click="picker.show()">
-					<input type="text" x-ref="dateRange" placeholder="Select date range"
-						class="w-full border-0 text-sm outline-none cursor-pointer" readonly />
-				</div>
-
-				<!-- Guests Dropdown -->
-				<div class="relative flex-1">
-					<div class="flex items-center justify-between gap-2 border border-gray-200 rounded-lg px-3 bg-white cursor-pointer"
-						@click="guestsOpen = !guestsOpen">
-						<div>
-							<p class="text-sm mt-2 mb-0 font-medium text-gray-700 truncate" x-text="getGuestText()"></p>
-							<p class="text-xs mb-2 mt-0 text-gray-400 truncate" x-text="getRoomText()"></p>
-						</div>
-						<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
-							stroke="currentColor" class="w-5 h-5 text-gray-400">
-							<path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
-						</svg>
+				<!-- Date + Guests in one row -->
+				<div class="flex flex-col md:flex-row gap-3">
+					<!-- Date Range Picker -->
+					<div class="ckh-be-card flex-1 py-2 sm-py-2 md-py-1 lg-py-0 flex items-center gap-2 px-3 cursor-pointer"
+						@click="picker.show()">
+						<input type="text" x-ref="dateRange" placeholder="Select date range"
+							class="ckh-be-input w-full border-0 text-sm outline-none cursor-pointer" readonly />
 					</div>
 
-					<!-- Dropdown Panel -->
-					<div x-show="guestsOpen" @click.away="guestsOpen = false"
-						class="absolute z-10 mt-2 w-full bg-white border border-gray-200 rounded-lg shadow-lg p-4 space-y-3">
-						<!-- Adults -->
-						<div class="flex items-center justify-between">
-							<span>Adults</span>
-							<div class="flex items-center gap-2">
-								<button class="px-2 py-1 border-0 border-gray-200 rounded" @click="decreaseAdults()">-</button>
-								<span x-text="adults"></span>
-								<button class="px-2 py-1 border-0 border-gray-200 rounded" @click="increaseAdults()">+</button>
+					<!-- Guests Dropdown -->
+					<div class="relative flex-1">
+						<div class="ckh-be-card flex items-center justify-between gap-2 px-3 cursor-pointer"
+							@click="guestsOpen = !guestsOpen">
+							<div>
+								<p class="text-sm mt-2 mb-0 font-medium text-gray-700 truncate" x-text="getGuestText()"></p>
+								<p class="ckh-be-text-primary text-xs mb-2 mt-0 truncate" x-text="getRoomText()"></p>
 							</div>
+							<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
+								stroke="currentColor" class="w-5 h-5 text-gray-400">
+								<path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+							</svg>
 						</div>
 
-						<!-- Children -->
-						<div class="flex items-center justify-between">
-							<span>Children</span>
-							<div class="flex items-center gap-2">
-								<button class="px-2 py-1 border-0 border-gray-200 rounded"
-									@click="decreaseChildren()">-</button>
-								<span x-text="children"></span>
-								<button class="px-2 py-1 border-0 border-gray-200 rounded"
-									@click="increaseChildren()">+</button>
+						<!-- Dropdown Panel -->
+						<div x-show="guestsOpen" @click.away="guestsOpen = false"
+							class="ckh-be-dropdown absolute z-10 mt-2 w-64 md-w-full shadow-lg p-4 space-y-3">
+							<!-- Adults -->
+							<div class="flex items-center justify-between">
+								<span>Adults</span>
+								<div class="flex items-center gap-2">
+									<button class="ckh-be-counter-btn px-2 py-1" @click="decreaseAdults()">-</button>
+									<span x-text="adults"></span>
+									<button class="ckh-be-counter-btn px-2 py-1" @click="increaseAdults()">+</button>
+								</div>
 							</div>
-						</div>
 
-						<!-- Rooms -->
-						<div class="flex items-center justify-between">
-							<span>Rooms</span>
-							<div class="flex items-center gap-2">
-								<button class="px-2 py-1 border-0 border-gray-200 rounded" @click="decreaseRooms()">-</button>
-								<span x-text="rooms"></span>
-								<button class="px-2 py-1 border-0 border-gray-200 rounded" @click="increaseRooms()">+</button>
+							<!-- Children -->
+							<div class="flex items-center justify-between">
+								<span>Children</span>
+								<div class="flex items-center gap-2">
+									<button class="ckh-be-counter-btn px-2 py-1" @click="decreaseChildren()">-</button>
+									<span x-text="children"></span>
+									<button class="ckh-be-counter-btn px-2 py-1" @click="increaseChildren()">+</button>
+								</div>
 							</div>
-						</div>
 
-						<!-- Separator -->
-						<hr class="my-2 border-gray-200">
-
-						<!-- Pets as Checkbox -->
-						<div class="flex items-center justify-between">
-							<label class="flex items-center gap-2 cursor-pointer">
-								<input type="checkbox" x-model="pets" class="w-4 h-4 text-blue-600 border-gray-300 rounded">
-								<span>Pet friendly</span>
-							</label>
+							<!-- Rooms -->
+							<div class="flex items-center justify-between">
+								<span>Rooms</span>
+								<div class="flex items-center gap-2">
+									<button class="ckh-be-counter-btn px-2 py-1" @click="decreaseRooms()">-</button>
+									<span x-text="rooms"></span>
+									<button class="ckh-be-counter-btn px-2 py-1" @click="increaseRooms()">+</button>
+								</div>
+							</div>
 						</div>
 					</div>
 				</div>
+
+				<!-- Search Button -->
+				<button class="ckh-be-button w-full cursor-pointer font-semibold py-2 shadow" @click="performSearch()">
+					Book Now
+				</button>
 			</div>
-
-			<!-- Search Button -->
-			<button
-				class="w-full cursor-pointer bg-blue-500 border-0 text-white font-semibold py-2 rounded-lg shadow hover:bg-blue-600"
-				@click="performSearch()">
-				Book Now
-			</button>
 		</div>
 <?php
 		return ob_get_clean();
