@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/output.css">
+    <title>Document</title>
+</head>
+<body>
+    <body class="bg-gray-100 p-6">
+  <div
+    class="max-w-xl mx-auto bg-white shadow-lg rounded-2xl p-6 flex flex-col gap-4"
+  >
+    <!-- Title -->
+    <h2 class="text-xl font-bold text-gray-800 mb-2">
+      Hotel Booking Form
+    </h2>
+
+    <!-- Guest Info -->
+    <div class="flex flex-col gap-3">
+      <label class="text-sm font-medium text-gray-600">Full Name</label>
+      <input
+        type="text"
+        placeholder="Enter your name"
+        class="border rounded-lg px-3 py-2 text-sm outline-none focus:border-blue-500"
+      />
+
+      <label class="text-sm font-medium text-gray-600">Email Address</label>
+      <input
+        type="email"
+        placeholder="you@example.com"
+        class="border rounded-lg px-3 py-2 text-sm outline-none focus:border-blue-500"
+      />
+
+      <label class="text-sm font-medium text-gray-600">Phone Number</label>
+      <input
+        type="tel"
+        placeholder="+62 812 3456 7890"
+        class="border rounded-lg px-3 py-2 text-sm outline-none focus:border-blue-500"
+      />
+    </div>
+
+    <!-- Dates -->
+    <div class="grid grid-cols-1 pr-2 sm:grid-cols-2 gap-4 mt-4">
+      <div>
+        <label class="text-sm font-medium text-gray-600">Check-In</label>
+        <input
+          type="date"
+          class="w-full border rounded-lg py-2 text-sm outline-none focus:border-blue-500"
+        />
+      </div>
+      <div>
+        <label class="text-sm font-medium text-gray-600">Check-Out</label>
+        <input
+          type="date"
+          class="w-full border rounded-lg py-2 text-sm outline-none focus:border-blue-500"
+        />
+      </div>
+    </div>
+
+    <!-- Guests -->
+    <div class="grid grid-cols-1 pr-2 sm:grid-cols-2 gap-4 mt-4">
+      <div>
+        <label class="text-sm font-medium text-gray-600">Adults</label>
+        <input
+          type="number"
+          min="1"
+          value="2"
+          class="w-full border rounded-lg py-2 text-sm outline-none focus:border-blue-500"
+        />
+      </div>
+      <div>
+        <label class="text-sm font-medium text-gray-600">Children</label>
+        <input
+          type="number"
+          min="0"
+          value="0"
+          class="w-full border rounded-lg py-2 text-sm outline-none focus:border-blue-500"
+        />
+      </div>
+    </div>
+
+    <!-- Room Type -->
+    <div class="mt-4">
+      <label class="text-sm font-medium text-gray-600">Room Type</label>
+      <select
+        class="w-full border rounded-lg px-3 py-2 text-sm outline-none focus:border-blue-500"
+      >
+        <option>Deluxe Room</option>
+        <option>Suite</option>
+        <option>Family Room</option>
+        <option>Single Room</option>
+      </select>
+    </div>
+
+    <!-- Special Request -->
+    <div class="mt-4">
+      <label class="text-sm font-medium text-gray-600">Special Requests</label>
+      <textarea
+        rows="3"
+        placeholder="Write any requests here..."
+        class="w-full border rounded-lg py-2 text-sm outline-none focus:border-blue-500"
+      ></textarea>
+    </div>
+
+    <!-- Submit -->
+    <button
+      class="mt-6 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-xl transition-all"
+    >
+      Book Now
+    </button>
+  </div>
+</body>
+
+</body>
+</html>
