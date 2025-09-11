@@ -249,7 +249,8 @@ class CKH_Booking_Engine_Public
 			const ckhBookingConfig = {
 				apiKey: '<?php echo esc_js($api_key); ?>',
 				apiUrl: '<?php echo esc_js($api_url); ?>',
-				siteUrl: '<?php echo esc_js(get_site_url()); ?>'
+				siteUrl: '<?php echo esc_js(get_site_url()); ?>',
+				callbackurl: "https://example.com/callback" // Example callback URL
 			};
 
 			function initBookingEngine() {
@@ -505,7 +506,7 @@ class CKH_Booking_Engine_Public
 
                                 <!-- Book Now Button -->
                                 <div class="mt-3">
-                                    <button class="w-full bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors" ${!cheapestRate ? 'disabled' : ''}>
+                                    <button onclick="openBookingForm('${roomId}', '${room.room_name}', '${cheapestRate ? cheapestRate.rate_name : ''}', '${cheapestRate ? cheapestRate.rate_price : 0}')" class="w-full bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors" ${!cheapestRate ? 'disabled' : ''}>
                                         ${cheapestRate ? 'Book Now' : 'Not Available'}
                                     </button>
                                 </div>
@@ -601,6 +602,264 @@ class CKH_Booking_Engine_Public
 					rateDescription
 				});
 			}
+
+			// Global variables to store current booking context
+			let currentBookingContext = {};
+
+			// Booking form functions
+			function openBookingForm(roomId, roomName, rateName, ratePrice) {
+				// Get current booking data from the Alpine.js component
+				const bookingData = window.Alpine.store || {};
+				const dateRange = document.querySelector('[x-ref="dateRange"]').value;
+				const adults = document.querySelector('[x-text="adults"]').textContent;
+				const children = document.querySelector('[x-text="children"]').textContent;
+
+				// Get selected rate data from room card
+				const roomCard = document.getElementById(roomId);
+				let selectedRate = rateName;
+				let selectedPrice = ratePrice;
+				let roomCode = '';
+				let rateCode = '';
+
+				if (roomCard) {
+					const currentRateCode = roomCard.dataset.currentRate;
+					const allRates = JSON.parse(roomCard.dataset.allRates);
+					const currentRate = allRates.find(rate => rate.rate_code === currentRateCode);
+					if (currentRate) {
+						selectedRate = currentRate.rate_name;
+						selectedPrice = currentRate.rate_price;
+						rateCode = currentRate.rate_code;
+					}
+
+					// Extract room code from room card data (assuming it's stored in a data attribute)
+					// You might need to modify this based on how you store room code
+					const roomData = roomCard.querySelector('.room-data');
+					if (roomData) {
+						roomCode = roomData.dataset.roomCode;
+					} else {
+						// Fallback: extract from room card ID or other source
+						const roomIdParts = roomId.split('-');
+						if (roomIdParts.length >= 2) {
+							roomCode = roomIdParts[1]; // room-{ROOMCODE}-{randomid}
+						}
+					}
+				}
+
+				// Store booking context globally for submission
+				currentBookingContext = {
+					roomId: roomId,
+					roomCode: roomCode,
+					rateCode: rateCode,
+					roomName: roomName,
+					rateName: selectedRate,
+					ratePrice: selectedPrice
+				};
+
+				// Parse dates
+				const [checkIn, checkOut] = dateRange.split(' - ');
+
+				// Populate form fields
+				document.getElementById('booking-room-type').value = roomName + ' - ' + selectedRate;
+				document.getElementById('booking-room-price').value = 'IDR ' + selectedPrice.toLocaleString() + ' / night';
+				document.getElementById('booking-checkin').value = checkIn;
+				document.getElementById('booking-checkout').value = checkOut;
+				document.getElementById('booking-adults').value = adults || '2';
+				document.getElementById('booking-children').value = children || '0';
+
+				// Show modal
+				document.getElementById('booking-modal').classList.remove('hidden');
+				document.body.style.overflow = 'hidden';
+			}
+
+			function closeBookingForm() {
+				document.getElementById('booking-modal').classList.add('hidden');
+				document.body.style.overflow = 'auto';
+			}
+
+			function submitBooking() {
+				// Get form data
+				const formData = {
+					roomType: document.getElementById('booking-room-type').value,
+					roomPrice: document.getElementById('booking-room-price').value,
+					fullName: document.getElementById('booking-full-name').value,
+					email: document.getElementById('booking-email').value,
+					phone: document.getElementById('booking-phone').value,
+					checkIn: document.getElementById('booking-checkin').value,
+					checkOut: document.getElementById('booking-checkout').value,
+					adults: document.getElementById('booking-adults').value,
+					children: document.getElementById('booking-children').value,
+					country: document.getElementById('booking-country').value,
+					state: document.getElementById('booking-state').value,
+					city: document.getElementById('booking-city').value,
+					postCode: document.getElementById('booking-postcode').value
+				};
+
+				// Basic validation
+				if (!formData.fullName || !formData.email || !formData.phone) {
+					alert('Please fill in all required fields (Name, Email, Phone)');
+					return;
+				}
+
+				// Email validation
+				const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+				if (!emailRegex.test(formData.email)) {
+					alert('Please enter a valid email address');
+					return;
+				}
+
+				console.log('Booking Data:', formData);
+
+				// Get room and rate information from the stored booking context
+				const roomTypeText = formData.roomType;
+				const roomPriceText = formData.roomPrice;
+
+				// Extract price number from "IDR 100,000 / night" format
+				const priceMatch = roomPriceText.match(/IDR\s+([\d,]+)/);
+				const roomPrice = priceMatch ? parseInt(priceMatch[1].replace(/,/g, '')) : 0;
+
+				// Use stored booking context for room and rate codes
+				const roomCode = currentBookingContext.roomCode || "DLX";
+				const rateCode = currentBookingContext.rateCode || "STDRRO";
+
+				// Prepare API request
+				const myHeaders = new Headers();
+				myHeaders.append("Content-Type", "application/json");
+				myHeaders.append("token", ckhBookingConfig.apiKey);
+
+				const bookingPayload = {
+					"booking_form": {
+						"room_code": roomCode,
+						"rate_code": rateCode,
+						"room_price": roomPrice,
+						"arrival_date": formData.checkIn,
+						"arrival_time": "14:00",
+						"departure_date": formData.checkOut,
+						"guest_detail": {
+							"name": formData.fullName,
+							"phone": formData.phone,
+							"email": formData.email,
+							"address": {
+								"area": formData.city,
+								"country": formData.country,
+								"city": formData.city,
+								"state": formData.state,
+								"postCode": formData.postCode
+							}
+						},
+						"guests": parseInt(formData.adults),
+						"rooms": 1
+					},
+					"payment_info": {
+						"redirect_url": ckhBookingConfig.callbackurl,
+						"send_url_to_email": true
+					}
+				};
+
+				const requestOptions = {
+					method: "POST",
+					headers: myHeaders,
+					body: JSON.stringify(bookingPayload),
+					redirect: "follow"
+				};
+
+				// Show loading state
+				const submitButton = document.querySelector('[onclick="submitBooking()"]');
+				const originalButtonText = submitButton.textContent;
+				submitButton.textContent = 'Processing...';
+				submitButton.disabled = true;
+
+				// Make API request
+				fetch(`${ckhBookingConfig.apiUrl}/createbooking`, requestOptions)
+					.then((response) => response.json())
+					.then((result) => {
+						console.log('Booking API Response:', result);
+
+						if (result.StatusCode === 0 && result.Result && result.Result.payment_url && result.Result.payment_url
+							.redirect_url) {
+							// Success - show payment iframe
+							const bookingCode = result.Result.booking_code;
+							const paymentUrl = result.Result.payment_url.redirect_url;
+
+							console.log('Booking successful:', {
+								bookingCode: bookingCode,
+								paymentId: result.Result.payment_id,
+								paymentToken: result.Result.payment_token,
+								paymentUrl: paymentUrl
+							});
+
+							// Close booking form and show payment modal
+							closeBookingForm();
+							openPaymentModal(paymentUrl, bookingCode);
+
+							// Reset form
+							document.getElementById('booking-full-name').value = '';
+							document.getElementById('booking-email').value = '';
+							document.getElementById('booking-phone').value = '';
+							document.getElementById('booking-country').value = '';
+							document.getElementById('booking-state').value = '';
+							document.getElementById('booking-city').value = '';
+							document.getElementById('booking-postcode').value = '';
+						} else {
+							alert('Booking submission failed. Please try again or contact support.');
+							console.error('Booking failed:', result);
+						}
+					})
+					.catch((error) => {
+						console.error('Booking API Error:', error);
+						alert('An error occurred while submitting your booking. Please try again.');
+					})
+					.finally(() => {
+						// Restore button state
+						submitButton.textContent = originalButtonText;
+						submitButton.disabled = false;
+					});
+			}
+
+			// Close modal when clicking outside
+			document.addEventListener('click', function(e) {
+				const modal = document.getElementById('booking-modal');
+				if (e.target === modal) {
+					closeBookingForm();
+				}
+			});
+
+			// Close modal with Escape key
+			document.addEventListener('keydown', function(e) {
+				if (e.key === 'Escape') {
+					closeBookingForm();
+					closePaymentModal();
+				}
+			});
+
+			// Payment modal functions
+			function openPaymentModal(paymentUrl, bookingCode) {
+				// Set the iframe source
+				document.getElementById('payment-iframe').src = paymentUrl;
+
+				// Update booking code display
+				document.getElementById('booking-code-display').textContent = bookingCode;
+
+				// Show payment modal
+				document.getElementById('payment-modal').classList.remove('hidden');
+				document.body.style.overflow = 'hidden';
+			}
+
+			function closePaymentModal() {
+				// Hide payment modal
+				document.getElementById('payment-modal').classList.add('hidden');
+				document.body.style.overflow = 'auto';
+
+				// Clear iframe source to stop loading
+				document.getElementById('payment-iframe').src = 'about:blank';
+			}
+
+			// Close payment modal when clicking outside
+			document.addEventListener('click', function(e) {
+				const paymentModal = document.getElementById('payment-modal');
+				if (e.target === paymentModal) {
+					closePaymentModal();
+				}
+			});
 		</script>
 
 		<!-- CKH Booking Engine - Customizable with Admin Settings -->
@@ -684,6 +943,174 @@ class CKH_Booking_Engine_Public
 		</div>
 		<div id="room-preview">
 		</div>
+
+		<!-- Booking Form Modal -->
+		<div id="booking-modal" class="fixed inset-0 z-50 hidden">
+			<div class="flex items-center justify-center min-h-screen p-4">
+				<div
+					class="max-w-4xl mx-auto bg-white shadow-lg rounded-2xl p-6 flex flex-col gap-4 w-full max-h-[90vh] overflow-y-auto">
+					<!-- Close Button -->
+					<div class="flex justify-between items-center mb-2">
+						<h2 class="text-xl font-bold text-gray-800">Hotel Booking Form</h2>
+						<button onclick="closeBookingForm()" class="text-gray-500 hover:text-gray-700 text-2xl">&times;</button>
+					</div>
+
+					<!-- Room Type (readonly, comes from room selection) -->
+					<div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
+						<div>
+							<label class="text-sm font-medium text-gray-600">Room Type</label>
+							<input type="text" id="booking-room-type" readonly
+								class="w-full border rounded-lg py-2 text-sm outline-none bg-gray-100 cursor-not-allowed" />
+						</div>
+						<div>
+							<label class="text-sm font-medium text-gray-600">Room Price</label>
+							<input type="text" id="booking-room-price" readonly
+								class="w-full border rounded-lg py-2 text-sm outline-none bg-gray-100 cursor-not-allowed" />
+						</div>
+					</div>
+
+					<!-- Guest Info -->
+					<div class="flex flex-col gap-3">
+						<!-- Full Name -->
+						<div>
+							<label class="text-sm font-medium text-gray-600">Full Name</label>
+							<input type="text" id="booking-full-name" placeholder="Enter your name"
+								class="w-full border rounded-lg py-2 text-sm outline-none focus:border-blue-500" />
+						</div>
+
+						<!-- Email & Phone side by side -->
+						<div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+							<div>
+								<label class="text-sm font-medium text-gray-600">Email Address</label>
+								<input type="email" id="booking-email" placeholder="you@example.com"
+									class="w-full border rounded-lg py-2 text-sm outline-none focus:border-blue-500" />
+							</div>
+							<div>
+								<label class="text-sm font-medium text-gray-600">Phone Number</label>
+								<input type="tel" id="booking-phone" placeholder="+62 812 3456 7890"
+									class="w-full border rounded-lg py-2 text-sm outline-none focus:border-blue-500" />
+							</div>
+						</div>
+					</div>
+
+					<!-- Dates -->
+					<div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
+						<div>
+							<label class="text-sm font-medium text-gray-600">Check-In</label>
+							<input type="date" id="booking-checkin" readonly
+								class="w-full border rounded-lg py-2 text-sm outline-none bg-gray-100 cursor-not-allowed" />
+						</div>
+						<div>
+							<label class="text-sm font-medium text-gray-600">Check-Out</label>
+							<input type="date" id="booking-checkout" readonly
+								class="w-full border rounded-lg py-2 text-sm outline-none bg-gray-100 cursor-not-allowed" />
+						</div>
+					</div>
+
+					<!-- Guests -->
+					<div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
+						<div>
+							<label class="text-sm font-medium text-gray-600">Adults</label>
+							<input type="number" id="booking-adults" min="1" readonly
+								class="w-full border rounded-lg py-2 text-sm outline-none bg-gray-100 cursor-not-allowed" />
+						</div>
+						<div>
+							<label class="text-sm font-medium text-gray-600">Children</label>
+							<input type="number" id="booking-children" min="0" readonly
+								class="w-full border rounded-lg py-2 text-sm outline-none bg-gray-100 cursor-not-allowed" />
+						</div>
+					</div>
+
+					<!-- Address -->
+					<div class="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
+						<div>
+							<label class="text-sm font-medium text-gray-600">Country</label>
+							<input type="text" id="booking-country" placeholder="Enter country"
+								class="w-full border rounded-lg py-2 text-sm outline-none focus:border-blue-500" />
+						</div>
+						<div>
+							<label class="text-sm font-medium text-gray-600">State</label>
+							<input type="text" id="booking-state" placeholder="Enter state"
+								class="w-full border rounded-lg py-2 text-sm outline-none focus:border-blue-500" />
+						</div>
+						<div>
+							<label class="text-sm font-medium text-gray-600">City</label>
+							<input type="text" id="booking-city" placeholder="Enter city"
+								class="w-full border rounded-lg py-2 text-sm outline-none focus:border-blue-500" />
+						</div>
+						<div>
+							<label class="text-sm font-medium text-gray-600">Post Code</label>
+							<input type="text" id="booking-postcode" placeholder="Enter post code"
+								class="w-full border rounded-lg py-2 text-sm outline-none focus:border-blue-500" />
+						</div>
+					</div>
+
+					<!-- Submit -->
+					<button onclick="submitBooking()"
+						class="mt-6 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-xl transition-all mb-4">
+						Book Now
+					</button>
+				</div>
+			</div>
+		</div>
+
+		<!-- Payment Modal -->
+		<div id="payment-modal" class="fixed inset-0 bg-black bg-opacity-75 z-50 hidden">
+			<div class="flex items-center justify-center min-h-screen p-4">
+				<div class="max-w-6xl mx-auto bg-white shadow-lg rounded-2xl overflow-hidden w-full max-h-[95vh] flex flex-col">
+					<!-- Header -->
+					<div class="flex justify-between items-center p-4 border-b bg-gray-50">
+						<div>
+							<h2 class="text-xl font-bold text-gray-800">Complete Your Payment</h2>
+							<p class="text-sm text-gray-600">Booking Code: <span id="booking-code-display"
+									class="font-mono font-semibold text-blue-600"></span></p>
+						</div>
+						<button onclick="closePaymentModal()"
+							class="text-gray-500 hover:text-gray-700 text-2xl font-bold px-2">&times;</button>
+					</div>
+
+					<!-- Payment Iframe Container -->
+					<div class="flex-1 relative" style="min-height: 600px;">
+						<iframe id="payment-iframe" src="about:blank" class="w-full h-full border-0" style="min-height: 600px;"
+							allow="payment"
+							sandbox="allow-same-origin allow-scripts allow-forms allow-top-navigation allow-popups">
+						</iframe>
+
+						<!-- Loading Overlay -->
+						<div id="payment-loading" class="absolute inset-0 bg-white flex items-center justify-center">
+							<div class="text-center">
+								<svg class="animate-spin h-12 w-12 text-blue-500 mx-auto mb-4"
+									xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+									<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4">
+									</circle>
+									<path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+								</svg>
+								<p class="text-gray-600">Loading payment gateway...</p>
+							</div>
+						</div>
+					</div>
+
+					<!-- Footer -->
+					<div class="p-4 border-t bg-gray-50 text-center">
+						<p class="text-xs text-gray-500">
+							Secure payment powered by Midtrans. Your payment information is encrypted and secure.
+						</p>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<script>
+			// Hide loading overlay when iframe loads
+			document.getElementById('payment-iframe').addEventListener('load', function() {
+				const loadingOverlay = document.getElementById('payment-loading');
+				if (this.src !== 'about:blank') {
+					loadingOverlay.style.display = 'none';
+				} else {
+					loadingOverlay.style.display = 'flex';
+				}
+			});
+		</script>
 <?php
 		return ob_get_clean();
 	}
