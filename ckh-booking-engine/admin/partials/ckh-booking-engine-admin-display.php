@@ -50,6 +50,43 @@ if (! defined('WPINC')) {
                                         <strong>Use this shortcode to embed the booking engine anywhere on your
                                             site:</strong>
                                         <code>[ckh_booking_engine]</code>
+                                        <button id="copy-shortcode-btn" type="button"
+                                            style="background:none;border:none;cursor:pointer;vertical-align:middle;margin-left:6px;"
+                                            title="Copy shortcode">
+                                            <span id="copy-shortcode-icon" style="font-size:16px;">📋</span>
+                                        </button>
+                                        <script type="text/javascript">
+                                            jQuery(function($) {
+                                                var $btn = $('#copy-shortcode-btn');
+                                                var $code = $btn.prev('code');
+                                                $btn.on('click', function() {
+                                                    var shortcode = $code.text();
+                                                    var $temp = $('<input>');
+                                                    $('body').append($temp);
+                                                    $temp.val(shortcode).select();
+                                                    document.execCommand('copy');
+                                                    $temp.remove();
+                                                    $btn.attr('title', 'Copied!');
+                                                    setTimeout(function() {
+                                                        $btn.attr('title', 'Copy shortcode');
+                                                    }, 1200);
+                                                });
+                                                $code.on('keydown', function(e) {
+                                                    if ((e.ctrlKey || e.metaKey) && e.key === 'c') {
+                                                        var shortcode = $code.text();
+                                                        var $temp = $('<input>');
+                                                        $('body').append($temp);
+                                                        $temp.val(shortcode).select();
+                                                        document.execCommand('copy');
+                                                        $temp.remove();
+                                                        $btn.attr('title', 'Copied!');
+                                                        setTimeout(function() {
+                                                            $btn.attr('title', 'Copy shortcode');
+                                                        }, 1200);
+                                                    }
+                                                });
+                                            });
+                                        </script>
                                     </p>
                                 </td>
                             </tr>
