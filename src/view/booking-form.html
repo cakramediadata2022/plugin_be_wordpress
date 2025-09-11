@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/output.css">
+    <title>Booking Form</title>
+</head>
+<body>
+    <body class="bg-gray-100 p-6">
+  <div
+    class="max-w-xl mx-auto bg-white shadow-lg rounded-2xl p-6 flex flex-col gap-4"
+  >
+    <!-- Title -->
+    <h2 class="text-xl font-bold text-gray-800 mb-2">
+      Hotel Booking Form
+    </h2>
+
+    <!-- Room Type (readonly, comes from other page) -->
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
+  <div>
+    <label class="text-sm font-medium text-gray-600">Room Type</label>
+    <input
+      type="text"
+      x-model="roomType"
+      readonly
+      class="w-full border rounded-lg py-2 text-sm outline-none bg-gray-100 cursor-not-allowed"
+    />
+  </div>
+
+  <div>
+    <label class="text-sm font-medium text-gray-600">Room Price</label>
+    <input
+      type="text"
+      x-model="roomPrice"
+      readonly
+      class="w-full border rounded-lg py-2 text-sm outline-none bg-gray-100 cursor-not-allowed"
+    />
+  </div>
+</div>
+
+
+    <!-- Guest Info -->
+    <div class="flex flex-col gap-3">
+  <!-- Full Name -->
+  <div>
+    <label class="text-sm font-medium text-gray-600">Full Name</label>
+    <input
+      type="text"
+      placeholder="Enter your name"
+      class="w-full border rounded-lg py-2 text-sm outline-none focus:border-blue-500"
+    />
+  </div>
+
+  <!-- Email & Phone side by side -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+    <div>
+      <label class="text-sm font-medium text-gray-600">Email Address</label>
+      <input
+        type="email"
+        placeholder="you@example.com"
+        class="w-full border rounded-lg py-2 text-sm outline-none focus:border-blue-500"
+      />
+    </div>
+
+    <div>
+      <label class="text-sm font-medium text-gray-600">Phone Number</label>
+      <input
+        type="tel"
+        placeholder="+62 812 3456 7890"
+        class="w-full border rounded-lg py-2 text-sm outline-none focus:border-blue-500"
+      />
+    </div>
+  </div>
+</div>
+
+
+    <!-- Dates -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
+      <div>
+        <label class="text-sm font-medium text-gray-600">Check-In</label>
+        <input
+          type="date"
+          class="w-full border rounded-lg py-2 text-sm outline-none focus:border-blue-500"
+          readonly
+        />
+      </div>
+      <div>
+        <label class="text-sm font-medium text-gray-600">Check-Out</label>
+        <input
+          type="date"
+          class="w-full border rounded-lg py-2 text-sm outline-none focus:border-blue-500"
+          readonly
+        />
+      </div>
+    </div>
+
+    <!-- Guests -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
+      <div>
+        <label class="text-sm font-medium text-gray-600">Adults</label>
+        <input
+          type="number"
+          min="1"
+          value="2"
+          class="w-full border rounded-lg py-2 text-sm outline-none focus:border-blue-500"
+        />
+      </div>
+      <div>
+        <label class="text-sm font-medium text-gray-600">Children</label>
+        <input
+          type="number"
+          min="0"
+          value="0"
+          class="w-full border rounded-lg py-2 text-sm outline-none focus:border-blue-500"
+        />
+      </div>
+    </div>
+
+
+<!-- Address -->
+<div class="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
+  <div>
+    <label class="text-sm font-medium text-gray-600">Country</label>
+    <input
+      type="text"
+      placeholder="Enter country"
+      class="w-full border rounded-lg py-2 text-sm outline-none focus:border-blue-500"
+    />
+  </div>
+
+  <div>
+    <label class="text-sm font-medium text-gray-600">State</label>
+    <input
+      type="text"
+      placeholder="Enter state"
+      class="w-full border rounded-lg py-2 text-sm outline-none focus:border-blue-500"
+    />
+  </div>
+
+  <div>
+    <label class="text-sm font-medium text-gray-600">City</label>
+    <input
+      type="text"
+      placeholder="Enter city"
+      class="w-full border rounded-lg py-2 text-sm outline-none focus:border-blue-500"
+    />
+  </div>
+
+  <div>
+    <label class="text-sm font-medium text-gray-600">Post Code</label>
+    <input
+      type="text"
+      placeholder="Enter post code"
+      class="w-full border rounded-lg py-2 text-sm outline-none focus:border-blue-500"
+    />
+  </div>
+</div>
+
+
+    <!-- Submit -->
+    <button
+      class="mt-6 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-xl transition-all"
+    >
+      Book Now
+    </button>
+  </div>
+</body>
+
+</body>
+</html>
