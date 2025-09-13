@@ -253,6 +253,27 @@ class CKH_Booking_Engine_Admin
 			}
 		}
 
+		// Handle callback URL
+		if (isset($input['callback_url'])) {
+			$callback_url = trim($input['callback_url']);
+
+			// If empty, use default
+			if (empty($callback_url)) {
+				$sanitized['callback_url'] = 'https://cakrasoft.net/confirmation-payment';
+			} else {
+				// Sanitize the URL
+				$sanitized['callback_url'] = esc_url_raw($callback_url);
+
+				// If sanitization failed, use default
+				if (empty($sanitized['callback_url'])) {
+					$sanitized['callback_url'] = 'https://cakrasoft.net/confirmation-payment';
+				}
+			}
+		} else {
+			// If not provided, use default
+			$sanitized['callback_url'] = 'https://cakrasoft.net/confirmation-payment';
+		}
+
 		if (isset($input['primary_color'])) {
 			$sanitized['primary_color'] = sanitize_hex_color($input['primary_color']);
 		}
