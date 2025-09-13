@@ -41,6 +41,7 @@ class CKH_Booking_Engine_Settings
      */
     private static $defaults = array(
         'api_key' => '',
+        'callback_url' => 'https://cakrasoft.net/confirmation-payment',
         'primary_color' => '#007cba',
         'secondary_color' => '#f0f0f1',
         'accent_color' => '#ff6900',
@@ -264,6 +265,28 @@ class CKH_Booking_Engine_Settings
         // API Key
         if (isset($settings['api_key'])) {
             $sanitized['api_key'] = sanitize_text_field($settings['api_key']);
+        }
+
+        // Callback URL
+        if (isset($settings['callback_url'])) {
+            $callback_url = trim($settings['callback_url']);
+
+            // If empty, use default
+            if (empty($callback_url)) {
+                $callback_url = self::$defaults['callback_url'];
+            } else {
+                // Sanitize the URL but be more permissive
+                $callback_url = esc_url_raw($callback_url);
+
+                // Only fall back to default if sanitization completely failed
+                if (empty($callback_url)) {
+                    $callback_url = self::$defaults['callback_url'];
+                }
+            }
+            $sanitized['callback_url'] = $callback_url;
+        } else {
+            // If not set at all, use default
+            $sanitized['callback_url'] = self::$defaults['callback_url'];
         }
 
         // Colors

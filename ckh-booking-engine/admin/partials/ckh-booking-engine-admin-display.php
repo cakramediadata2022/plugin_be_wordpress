@@ -120,6 +120,22 @@ if (! defined('WPINC')) {
                                     </p>
                                 </td>
                             </tr>
+                            <tr>
+                                <th scope="row">Callback URL</th>
+                                <td>
+                                    <?php
+                                    $callback_url = isset($options['callback_url']) ? $options['callback_url'] : 'https://cakrasoft.net/confirmation-payment';
+                                    ?>
+                                    <input type="url" name="ckh_booking_engine_options[callback_url]" id="ckh-callback-url"
+                                        value="<?php echo esc_attr($callback_url); ?>" class="regular-text"
+                                        placeholder="https://cakrasoft.net/confirmation-payment" />
+                                    <p class="description">
+                                        URL where customers will be redirected after completing payment.
+                                        <br><strong>Default:</strong> https://cakrasoft.net/confirmation-payment
+                                        (used if left blank)
+                                    </p>
+                                </td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>

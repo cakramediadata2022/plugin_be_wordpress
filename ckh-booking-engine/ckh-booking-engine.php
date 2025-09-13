@@ -14,7 +14,7 @@
  *
  * @wordpress-plugin
  * Plugin Name:       CKH Booking Engine
- * Plugin URI:        https://cakrasoft.com/ckh-booking-engine/
+ * Plugin URI:        https://github.com/cakramediadata2022/plugin_be_wordpress
  * Description:       Booking engine plugin by cakrasoft.
  * Version:           1.0.0
  * Author:            cakrasoft

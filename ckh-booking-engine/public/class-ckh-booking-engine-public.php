@@ -236,6 +236,7 @@ class CKH_Booking_Engine_Public
 		$settings = CKH_Booking_Engine_Settings::get_settings();
 		$api_key = $settings['api_key'];
 		$api_url = CKH_Booking_Engine::get_api_url();
+		$callback_url = !empty($settings['callback_url']) ? $settings['callback_url'] : 'https://cakrasoft.net/confirmation-payment';
 
 		ob_start();
 ?>
@@ -250,7 +251,7 @@ class CKH_Booking_Engine_Public
 				apiKey: '<?php echo esc_js($api_key); ?>',
 				apiUrl: '<?php echo esc_js($api_url); ?>',
 				siteUrl: '<?php echo esc_js(get_site_url()); ?>',
-				callbackurl: "https://example.com/callback" // Example callback URL
+				callbackUrl: '<?php echo esc_js($callback_url); ?>'
 			};
 
 			function initBookingEngine() {
@@ -750,7 +751,7 @@ class CKH_Booking_Engine_Public
 						"rooms": 1
 					},
 					"payment_info": {
-						"redirect_url": ckhBookingConfig.callbackurl,
+						"redirect_url": ckhBookingConfig.callbackUrl,
 						"send_url_to_email": true
 					}
 				};
@@ -1056,10 +1057,11 @@ class CKH_Booking_Engine_Public
 
 		<!-- Payment Modal -->
 		<div id="payment-modal" class="fixed inset-0 bg-black bg-opacity-75 z-50 hidden">
-			<div class="flex items-center justify-center min-h-screen p-4">
-				<div class="max-w-6xl mx-auto bg-white shadow-lg rounded-2xl overflow-hidden w-full max-h-[95vh] flex flex-col">
+			<div class="flex items-center justify-center min-h-screen p-2 md:p-4">
+				<div
+					class="max-w-6xl mx-auto bg-white shadow-lg rounded-2xl overflow-hidden w-full max-h-[98vh] overflow-y-auto">
 					<!-- Header -->
-					<div class="flex justify-between items-center p-4 border-b bg-gray-50">
+					<div class="flex justify-between items-center p-4 border-b bg-gray-50 sticky top-0 z-10">
 						<div>
 							<h2 class="text-xl font-bold text-gray-800">Complete Your Payment</h2>
 							<p class="text-sm text-gray-600">Booking Code: <span id="booking-code-display"
@@ -1070,10 +1072,10 @@ class CKH_Booking_Engine_Public
 					</div>
 
 					<!-- Payment Iframe Container -->
-					<div class="flex-1 relative" style="min-height: 600px;">
-						<iframe id="payment-iframe" src="about:blank" class="w-full h-full border-0" style="min-height: 600px;"
-							allow="payment"
-							sandbox="allow-same-origin allow-scripts allow-forms allow-top-navigation allow-popups">
+					<div class="relative" style="height: 80vh; min-height: 600px;">
+						<iframe id="payment-iframe" src="about:blank" class="w-full h-full border-0"
+							style="height: 100%; min-height: 600px;" allow="payment" scrolling="yes" frameborder="0"
+							sandbox="allow-same-origin allow-scripts allow-forms allow-top-navigation allow-popups allow-modals">
 						</iframe>
 
 						<!-- Loading Overlay -->
@@ -1094,6 +1096,9 @@ class CKH_Booking_Engine_Public
 					<div class="p-4 border-t bg-gray-50 text-center">
 						<p class="text-xs text-gray-500">
 							Secure payment powered by Midtrans. Your payment information is encrypted and secure.
+						</p>
+						<p class="text-xs text-gray-400 mt-1">
+							💡 Tip: The payment form should be scrollable. If you have issues, try refreshing the page.
 						</p>
 					</div>
 				</div>
