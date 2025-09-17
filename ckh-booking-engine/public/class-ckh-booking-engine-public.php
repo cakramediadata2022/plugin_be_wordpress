@@ -865,7 +865,7 @@ class CKH_Booking_Engine_Public
 
 		<!-- CKH Booking Engine - Customizable with Admin Settings -->
 		<div class="ckh-booking-engine-wrapper">
-			<div class="ckh-be-container w-full p-3 sm-p-4 md-p-5 lg-p-6 rounded-2xl shadow-md space-y-4"
+			<div class="ckh-be-container p-3 sm-p-4 md-p-5 lg-p-6 rounded-2xl shadow-md space-y-4"
 				x-data="initBookingEngine()" x-init="initDatePicker()">
 
 				<!-- Date + Guests in one row -->
